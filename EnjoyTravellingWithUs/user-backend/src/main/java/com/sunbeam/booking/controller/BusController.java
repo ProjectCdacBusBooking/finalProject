@@ -20,6 +20,24 @@ import lombok.RequiredArgsConstructor;
 public class BusController {
 
     private final BusService busService;
+    
+    
+    /**
+     * ✅ Search Buses API
+     * 📌 Source, Destination, Date नुसार बसा ची शोध घेते.
+     * 🟢 URL: GET /api/buses/search?source={source}&destination={destination}&date={date}
+     */
+    @GetMapping("/search")
+    public ResponseEntity<?> searchBuses(@RequestParam String source, @RequestParam String destination, @RequestParam String date) {
+        List<String> buses = busService.searchBuses(source, destination, date);
+        if (!buses.isEmpty()) {
+            return ResponseEntity.ok(buses);
+        } else {
+            return ResponseEntity.status(404).body("❌ No buses found for the given search!");
+        }
+    }
+    
+    
 
     /**
      * ✅ Get Bus Details API

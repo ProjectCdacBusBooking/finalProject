@@ -16,6 +16,22 @@ public class BusService {
 
     private final BusRepository busRepository;
 
+    
+    /**
+     * ✅ Search Buses Method
+     * 📌 Source, Destination, Date नुसार बसा शोधतो.
+     */
+    public List<String> searchBuses(String source, String destination, String date) {
+        // Placeholder for now. Actual DB Logic Required.
+        List<String> availableBuses = new ArrayList<>();
+        if (source.equals("Mumbai") && destination.equals("Pune") && date.equals("2025-02-01")) {
+            availableBuses.add("Bus1 - Mumbai to Pune");
+            availableBuses.add("Bus2 - Mumbai to Pune");
+        }
+        return availableBuses;
+    }
+    
+    
     /**
      * ✅ Get Bus Details Method
      * 📌 Bus ID नुसार बसा ची तपशील माहिती मिळवतो.
