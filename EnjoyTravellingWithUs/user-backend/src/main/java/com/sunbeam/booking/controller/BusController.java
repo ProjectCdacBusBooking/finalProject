@@ -2,6 +2,7 @@ package com.sunbeam.booking.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,10 +19,11 @@ import lombok.RequiredArgsConstructor;
  * 📌 Bus Search, Bus Details, Seat Availability, Seat Selection, Booking Management API आहेत.
  */
 @RestController
-@RequestMapping("/api/buses")
+@RequestMapping("/bus")
 @RequiredArgsConstructor
 public class BusController {
 
+	@Autowired
     private final BusService busService;
     
     

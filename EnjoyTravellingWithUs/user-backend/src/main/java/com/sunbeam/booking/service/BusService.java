@@ -3,6 +3,7 @@ package com.sunbeam.booking.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sunbeam.booking.repository.BusRepository;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BusService {
 
+	@Autowired
     private final BusRepository busRepository;
 
     
