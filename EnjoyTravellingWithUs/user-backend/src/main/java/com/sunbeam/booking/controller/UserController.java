@@ -133,4 +133,20 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ OTP Sending Failed!");
         }
     }
+    
+    /**
+     * ✅ Reset Password API
+     * 📌 OTP Verify करून, User ला नवीन पासवर्ड सेट करण्याची सुविधा देतो.
+     * 🟢 URL: POST /api/users/reset-password
+     */
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam String email, @RequestParam String otp, @RequestParam String newPassword) {
+        boolean isPasswordReset = userService.resetPassword(email, otp, newPassword);
+        if (isPasswordReset) {
+            return ResponseEntity.ok("✅ Password Reset Successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ Invalid OTP or User Not Found!");
+        }
+    }
+    
 }

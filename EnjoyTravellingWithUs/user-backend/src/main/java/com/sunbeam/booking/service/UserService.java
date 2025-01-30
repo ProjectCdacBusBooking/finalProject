@@ -141,5 +141,23 @@ public class UserService {
         return false; // User Not Found
     }
     
+    /**
+     * ✅ Reset Password Method
+     * 📌 OTP Verify करून User चं पासवर्ड रीसेट करतो.
+     */
+    public boolean resetPassword(String email, String otp, String newPassword) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            // OTP Verification Logic (Currently simplified)
+            // In real world, OTP should be sent and validated properly
+            if (otp.equals("123456")) {  // Example: Check if OTP is correct
+                User user = userOpt.get();
+                user.setPassword(newPassword); // Set New Password
+                userRepository.save(user); // Save Updated User
+                return true;
+            }
+        }
+        return false; // User Not Found or Invalid OTP
+    }
 
 }
