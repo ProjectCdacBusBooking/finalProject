@@ -1,5 +1,8 @@
 package com.sunbeam.booking.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.sunbeam.booking.repository.BusRepository;
@@ -42,6 +45,20 @@ public class BusService {
             return "Bus1 - Mumbai to Pune - 30 seats available, Departs at 10:00 AM";
         } else if (busId == 2L) {
             return "Bus2 - Mumbai to Pune - 20 seats available, Departs at 2:00 PM";
+        }
+        return null;
+    }
+    
+    /**
+     * ✅ Check Seat Availability Method
+     * 📌 Bus ID नुसार सीट उपलब्धता तपासते.
+     */
+    public String checkSeatAvailability(Long busId) {
+        // Placeholder logic for now. Real seat availability logic required.
+        if (busId == 1L) {
+            return "Available seats: 15 out of 30";
+        } else if (busId == 2L) {
+            return "Available seats: 5 out of 20";
         }
         return null;
     }
