@@ -66,4 +66,19 @@ public class BookingController {
     public ResponseEntity<?> getBookingHistory(@PathVariable Long userId) {
         return ResponseEntity.ok(bookingService.getBookingHistory(userId));
     }
+    
+    /**
+     * ✅ Cancel Booking & Refund Process API
+     * 📌 बुकिंग रद्द करून वापरकर्त्याला रिफंड प्रोसेस सुरु करते.
+     * 🟢 URL: POST /api/bookings/cancel/{bookingId}
+     */
+    @PostMapping("/cancel/{bookingId}")
+    public ResponseEntity<?> cancelBooking(@PathVariable Long bookingId) {
+        boolean cancelStatus = bookingService.cancelBooking(bookingId);
+        if (cancelStatus) {
+            return ResponseEntity.ok("✅ Booking cancelled successfully. Refund process initiated.");
+        } else {
+            return ResponseEntity.status(404).body("❌ Booking not found or already cancelled.");
+        }
+    }
 }
