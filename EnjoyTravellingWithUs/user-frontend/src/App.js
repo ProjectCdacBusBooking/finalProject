@@ -1,6 +1,6 @@
-// user-frontend/src/App.js
+// 📂 user-frontend/src/App.js
 
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import RegisterForm from "./components/Auth/RegisterForm";
 import LoginForm from "./components/Auth/LoginForm";
@@ -21,8 +21,13 @@ import BookingCancellationPage from "./screens/BookingCancellationPage";
 import NotificationsPage from "./screens/NotificationPage";
 import LiveLocationPage from "./screens/LiveLocationPage";
 import ETAUpdatesPage from "./screens/ETAUpdatesPage";
+import SeatAvailability from "./components/SeatAvailability"; // Added import for SeatAvailability
+import "./styles/seatAvailability.css"; // Added import for SeatAvailability CSS
 
-function App() {
+const App = () => {
+  const [busId, setBusId] = useState(1); // Example busId
+  const [selectedDate, setSelectedDate] = useState("2025-02-01"); // Example date
+
   return (
     <Router>
       {/* Navbar ha top section la render honar */}
@@ -89,11 +94,47 @@ function App() {
               path="/update-profile"
               element={<PrivateRoute element={<UpdateProfileForm />} />}
             />
+
+            {/* Seat Availability component */}
+            <Route
+              path="/seat-availability"
+              element={
+                <div>
+                  <h1>Bus Booking System</h1>
+                  {/* Date and bus selection (for the sake of this example, we are hardcoding these values) */}
+                  <div>
+                    <label htmlFor="busId">Select Bus:</label>
+                    <select
+                      id="busId"
+                      value={busId}
+                      onChange={(e) => setBusId(e.target.value)}
+                    >
+                      <option value={1}>Bus 1</option>
+                      <option value={2}>Bus 2</option>
+                      <option value={3}>Bus 3</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor="date">Select Date:</label>
+                    <input
+                      type="date"
+                      id="date"
+                      value={selectedDate}
+                      onChange={(e) => setSelectedDate(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Display seat availability */}
+                  <SeatAvailability busId={busId} selectedDate={selectedDate} />
+                </div>
+              }
+            />
           </Routes>
         </div>
       </div>
     </Router>
   );
-}
+};
 
 export default App;

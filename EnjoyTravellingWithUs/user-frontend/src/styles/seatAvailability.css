@@ -1,0 +1,32 @@
+.seat-availability {
+    margin: 20px;
+  }
+  
+  .seats {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  
+  .seat {
+    width: 40px;
+    height: 40px;
+    background-color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .seat.available {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .seat.unavailable {
+    background-color: #f44336;
+    color: white;
+    cursor: not-allowed;
+  }
+  
