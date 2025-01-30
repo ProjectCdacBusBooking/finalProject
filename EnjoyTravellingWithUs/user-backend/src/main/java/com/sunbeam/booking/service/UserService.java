@@ -122,4 +122,24 @@ public class UserService {
         }
         return false; // User Not Found
     }
+    
+    /**
+     * ✅ Send OTP Method for Forgot Password
+     * 📌 User च्या ईमेल वर OTP पाठवतो.
+     */
+    public boolean sendPasswordResetOTP(String email) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isPresent()) {
+            // OTP Generation logic - can be implemented using an external library or custom logic
+            // For now, just printing OTP for demo purposes
+            String otp = "123456"; // This can be a dynamically generated OTP
+            System.out.println("OTP Sent to " + email + ": " + otp); // Just for logging purpose
+
+            // You can integrate an email service to send the OTP here
+            return true;
+        }
+        return false; // User Not Found
+    }
+    
+
 }

@@ -118,4 +118,19 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ Password Change Failed!");
         }
     }
+    
+    /**
+     * ✅ Forgot Password API
+     * 📌 User ला OTP पाठवतो, जेणेकरून तो नवीन पासवर्ड सेट करू शकेल.
+     * 🟢 URL: POST /api/users/forgot-password
+     */
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
+        boolean isOTPSent = userService.sendPasswordResetOTP(email);
+        if (isOTPSent) {
+            return ResponseEntity.ok("✅ OTP Sent Successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ OTP Sending Failed!");
+        }
+    }
 }
