@@ -107,4 +107,19 @@ public class UserService {
         }
         return false; // User Not Found
     }
+    
+    /**
+     * ✅ Change Password Method
+     * 📌 User चं Password Update करतो Database मध्ये.
+     */
+    public boolean changePassword(Long userId, String newPassword) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setPassword(newPassword); // Password Update
+            userRepository.save(user); // Save Updated User
+            return true;
+        }
+        return false; // User Not Found
+    }
 }

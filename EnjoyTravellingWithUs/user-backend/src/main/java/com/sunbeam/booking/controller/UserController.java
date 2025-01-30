@@ -103,4 +103,19 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ Profile Update Failed!");
         }
     }
+    
+    /**
+     * ✅ Change Password API
+     * 📌 User चं Password Update करतो.
+     * 🟢 URL: POST /api/users/change-password/{userId}
+     */
+    @PostMapping("/change-password/{userId}")
+    public ResponseEntity<String> changePassword(@PathVariable Long userId, @RequestBody String newPassword) {
+        boolean isChanged = userService.changePassword(userId, newPassword);
+        if (isChanged) {
+            return ResponseEntity.ok("✅ Password Changed Successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ Password Change Failed!");
+        }
+    }
 }
