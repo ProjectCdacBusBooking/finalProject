@@ -8,7 +8,7 @@ function Navbar() {
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
         <Link className="navbar-brand" to="/">
-          Enjoy Travelling With Us!!!
+          <i className="fas fa-bus"></i> Enjoy Travelling With Us !!!
         </Link>
         <button
           className="navbar-toggler"
