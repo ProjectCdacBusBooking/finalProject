@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sunbeam.booking.dto.BookingConfirmationRequest;
+import com.sunbeam.booking.dto.BookingDTO;
 import com.sunbeam.booking.dto.SeatSelectionRequest;
 import com.sunbeam.booking.service.BookingService;
 
@@ -79,6 +80,21 @@ public class BookingController {
             return ResponseEntity.ok("✅ Booking cancelled successfully. Refund process initiated.");
         } else {
             return ResponseEntity.status(404).body("❌ Booking not found or already cancelled.");
+        }
+    }
+    
+    /**
+     * ✅ Get Booking Details API
+     * 📌 बुकिंग तपशील मिळवण्यासाठी वापरला जातो.
+     * 🟢 URL: GET /api/bookings/{bookingId}
+     */
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<?> getBookingDetails(@PathVariable Long bookingId) {
+        BookingDTO bookingDTO = bookingService.getBookingDetails(bookingId);
+        if (bookingDTO != null) {
+            return ResponseEntity.ok(bookingDTO);
+        } else {
+            return ResponseEntity.status(404).body("❌ Booking not found.");
         }
     }
 }

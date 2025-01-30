@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.sunbeam.booking.dto.BookingConfirmationRequest;
+import com.sunbeam.booking.dto.BookingDTO;
 import com.sunbeam.booking.dto.SeatSelectionRequest;
 import com.sunbeam.booking.entity.Booking;
 import com.sunbeam.booking.repository.BookingRepository;
@@ -48,5 +49,19 @@ public class BookingService {
             }
         }
         return false;
+    }
+    
+    /**
+     * ✅ Get Booking Details Method
+     * 📌 बुकिंग तपशील मिळवण्यासाठी वापरला जातो.
+     */
+    public BookingDTO getBookingDetails(Long bookingId) {
+        Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+        if (bookingOptional.isPresent()) {
+            Booking booking = bookingOptional.get();
+            // DTO conversion can be done here
+            return new BookingDTO(booking);
+        }
+        return null;
     }
 }

@@ -3,6 +3,8 @@ package com.sunbeam.booking.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "bookings")
 @Getter
@@ -27,8 +29,14 @@ public class Booking {
     private int selectedSeats; // Nivadlelya seats chi sankhya
 
     @Column(nullable = false)
+    private String seatNumber; // Nivadlelya seat number
+
+    @Column(nullable = false)
     private String paymentMethod; // Payment method (Wallet, Credit Card, etc.)
 
     @Column(nullable = false)
     private String bookingStatus; // Booking status (Confirmed, Pending, Cancelled)
+
+    @Column(nullable = false)
+    private Date bookingDate; // Booking date (Date type)
 }
