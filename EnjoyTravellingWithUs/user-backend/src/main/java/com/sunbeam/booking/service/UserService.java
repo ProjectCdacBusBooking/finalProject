@@ -90,4 +90,21 @@ public class UserService {
         }
         return null; // Profile Not Found
     }
+    
+    /**
+     * ✅ Update User Profile Method
+     * 📌 User चं Profile Update करतो Database मध्ये.
+     */
+    public boolean updateUserProfile(Long userId, UserDTO userDTO) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            user.setFullName(userDTO.getFullName());
+            user.setEmail(userDTO.getEmail());
+            user.setPhone(userDTO.getPhone());
+            userRepository.save(user); // Save Updated User
+            return true;
+        }
+        return false; // User Not Found
+    }
 }

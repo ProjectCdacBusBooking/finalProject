@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -85,6 +86,21 @@ public class UserController {
             return ResponseEntity.ok(userDTO); // Profile Found
         } else {
             return ResponseEntity.notFound().build(); // Profile Not Found
+        }
+    }
+    
+    /**
+     * ✅ Update User Profile API
+     * 📌 User चं Profile Update करतो.
+     * 🟢 URL: PUT /api/users/update/{userId}
+     */
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<String> updateUserProfile(@PathVariable Long userId, @RequestBody UserDTO userDTO) {
+        boolean isUpdated = userService.updateUserProfile(userId, userDTO);
+        if (isUpdated) {
+            return ResponseEntity.ok("✅ Profile Updated Successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ Profile Update Failed!");
         }
     }
 }
