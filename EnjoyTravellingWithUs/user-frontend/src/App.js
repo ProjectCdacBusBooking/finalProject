@@ -58,7 +58,10 @@ function App() {
 
             <Route path="/booking-history" element={<BookingHistoryPage />} />
 
-            <Route path="/notifications" element={<NotificationsPage />} />
+            <Route
+              path="/notifications/:userId"
+              element={<NotificationsPage />}
+            />
 
             <Route
               path="/cancel-booking/:bookingId"
