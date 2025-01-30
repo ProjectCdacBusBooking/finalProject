@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/users";
+const API_URL = "http://localhost:8080/user";
 
 export const getUserProfile = async () => {
   const token = localStorage.getItem("token");

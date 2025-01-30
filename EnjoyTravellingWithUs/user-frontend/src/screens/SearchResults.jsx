@@ -1,7 +1,7 @@
 // 📂 src/screens/SearchResults.jsx
 
 import React, { useEffect, useState } from "react";
-import { useLocation, useHistory, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function SearchResults() {
@@ -26,7 +26,7 @@ function SearchResults() {
 
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/buses/search?source=${source}&destination=${destination}&date=${date}`
+          `http://localhost:8080/buses/search?source=${source}&destination=${destination}&date=${date}`
         );
         setBuses(response.data);
       } catch (err) {

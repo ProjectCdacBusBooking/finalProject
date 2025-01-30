@@ -9,6 +9,7 @@ import Sidebar from "./components/Layout/Sidebar";
 import PrivateRoute from "./utils/PrivateRoute";
 import HomePage from "./screens/HomePage";
 import SearchResults from "./screens/SearchResults";
+import BusDetails from "./screens/BusDetails";
 
 function App() {
   return (
@@ -20,15 +21,16 @@ function App() {
           <Routes>
             <Route exact path="/" element={<HomePage />} />
             <Route path="/search" element={<SearchResults />} />
+            <Route path="/bus/:busId" element={<BusDetails />} />
             <Route path="/register" element={<RegisterForm />} />
             <Route path="/login" element={<LoginForm />} />
             <Route
               path="/profile"
-              element={<PrivateRoute component={UserProfile} />}
+              element={<PrivateRoute component={<UserProfile />} />}
             />
             <Route
               path="/update-profile"
-              element={<PrivateRoute component={UpdateProfileForm} />}
+              element={<PrivateRoute component={<UpdateProfileForm />} />}
             />
           </Routes>
         </div>
