@@ -8,6 +8,7 @@ import Navbar from "./components/Layout/Navbar";
 import Sidebar from "./components/Layout/Sidebar";
 import PrivateRoute from "./utils/PrivateRoute";
 import HomePage from "./screens/HomePage";
+import SearchResults from "./screens/SearchResults";
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
         <Sidebar />
         <div className="container mt-4" style={{ marginLeft: "260px" }}>
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route exact path="/" element={<HomePage />} />
+            <Route path="/search" element={<SearchResults />} />
             <Route path="/register" element={<RegisterForm />} />
             <Route path="/login" element={<LoginForm />} />
             <Route
