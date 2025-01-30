@@ -12,6 +12,8 @@ import PrivateRoute from "./utils/PrivateRoute";
 import HomePage from "./screens/HomePage";
 import SearchResults from "./screens/SearchResults";
 import BusDetails from "./screens/BusDetails";
+import Booking from "./screens/Booking";
+import ConfirmBooking from "./screens/ConfirmBooking";
 
 function App() {
   return (
@@ -29,6 +31,14 @@ function App() {
             <Route path="/search" element={<SearchResults />} />
             {/* Bus details page */}
             <Route path="/bus/:busId" element={<BusDetails />} />
+
+            <Route path="/book/:busId" element={<Booking />} />
+
+            <Route
+              path="/confirm-booking/:bookingId"
+              element={<ConfirmBooking />}
+            />
+
             {/* Registration form */}
             <Route path="/register" element={<RegisterForm />} />
             {/* Login form */}
