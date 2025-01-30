@@ -19,6 +19,8 @@ import WalletPage from "./screens/WalletPage";
 import BookingHistoryPage from "./screens/BookingHistoryPage";
 import BookingCancellationPage from "./screens/BookingCancellationPage";
 import NotificationsPage from "./screens/NotificationPage";
+import LiveLocationPage from "./screens/LiveLocationPage";
+import ETAUpdatesPage from "./screens/ETAUpdatesPage";
 
 function App() {
   return (
@@ -57,6 +59,13 @@ function App() {
             <Route path="/wallet" element={<WalletPage />} />
 
             <Route path="/booking-history" element={<BookingHistoryPage />} />
+
+            <Route
+              path="/buses/:busId/live-location"
+              element={<LiveLocationPage />}
+            />
+
+            <Route path="/buses/:busId/eta" element={<ETAUpdatesPage />} />
 
             <Route
               path="/notifications/:userId"
