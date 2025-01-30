@@ -2,6 +2,8 @@ package com.sunbeam.booking.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,5 +55,15 @@ public class BookingController {
         } else {
             return ResponseEntity.status(400).body("❌ Booking confirmation failed. Please try again!");
         }
+    }
+    
+    /**
+     * ✅ Get Booking History API
+     * 📌 वापरकर्त्याच्या सर्व बुकिंग्स (हिस्ट्री) मिळवते.
+     * 🟢 URL: GET /api/bookings/history/{userId}
+     */
+    @GetMapping("/history/{userId}")
+    public ResponseEntity<?> getBookingHistory(@PathVariable Long userId) {
+        return ResponseEntity.ok(bookingService.getBookingHistory(userId));
     }
 }

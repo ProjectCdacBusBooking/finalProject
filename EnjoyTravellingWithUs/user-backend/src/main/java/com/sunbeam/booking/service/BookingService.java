@@ -1,12 +1,16 @@
 package com.sunbeam.booking.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sunbeam.booking.dto.BookingConfirmationRequest;
 import com.sunbeam.booking.dto.SeatSelectionRequest;
+import com.sunbeam.booking.entity.Booking;
 import com.sunbeam.booking.repository.BookingRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -14,6 +18,7 @@ import lombok.RequiredArgsConstructor;
  * 📌 Seat Selection, Booking Confirmation, Cancellation प्रबंधन संबंधित सर्व ऑपरेशन्स.
  */
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class BookingService {
 
@@ -44,5 +49,14 @@ public class BookingService {
             return true;
         }
         return false;
+    }
+    
+    /**
+     * ✅ Get Booking History Method
+     * 📌 वापरकर्त्याच्या सर्व बुकिंग्स मिळवणे.
+     */
+    public List<Booking> getBookingHistory(Long userId) {
+        // Placeholder logic to get booking history by user ID
+        return bookingRepository.findByUserId(userId);
     }
 }
