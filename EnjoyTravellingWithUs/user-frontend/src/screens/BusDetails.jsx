@@ -14,12 +14,10 @@ function BusDetails() {
   useEffect(() => {
     const fetchBusDetails = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/buses/${busId}`
-        );
+        const response = await axios.get(`http://localhost:8080/bus/${busId}`);
         setBus(response.data);
       } catch (err) {
-        setError("Error fetching bus details. Please try again.");
+        setError("❌ Error fetching bus details. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -46,16 +44,16 @@ function BusDetails() {
         <div className="card shadow p-4">
           <h2 className="text-center text-primary">{bus.name}</h2>
           <p className="text-center">
-            <strong>Route:</strong> {bus.source} → {bus.destination} <br />
-            <strong>Departure:</strong> {bus.departureTime} <br />
-            <strong>Fare:</strong> ₹{bus.fare} <br />
+            <strong>🚌 Route:</strong> {bus.source} → {bus.destination} <br />
+            <strong>⏳ Departure:</strong> {bus.departureTime} <br />
+            <strong>💰 Fare:</strong> ₹{bus.fare} <br />
           </p>
           <button className="btn btn-success w-100" onClick={handleBookNow}>
-            Book Now
+            🚀 Book Now
           </button>
         </div>
       ) : (
-        <div className="alert alert-warning">No bus details found.</div>
+        <div className="alert alert-warning">⚠️ No bus details found.</div>
       )}
     </div>
   );

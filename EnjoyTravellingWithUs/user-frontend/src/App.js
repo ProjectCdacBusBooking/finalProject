@@ -1,3 +1,5 @@
+// user-frontend/src/App.js
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import RegisterForm from "./components/Auth/RegisterForm";
@@ -14,17 +16,24 @@ import BusDetails from "./screens/BusDetails";
 function App() {
   return (
     <Router>
+      {/* Navbar ha top section la render honar */}
       <Navbar />
       <div className="d-flex">
+        {/* Sidebar ha left side la render honar */}
         <Sidebar />
         <div className="container mt-4" style={{ marginLeft: "260px" }}>
           <Routes>
+            {/* Home Page */}
             <Route exact path="/" element={<HomePage />} />
+            {/* Search results page */}
             <Route path="/search" element={<SearchResults />} />
+            {/* Bus details page */}
             <Route path="/bus/:busId" element={<BusDetails />} />
+            {/* Registration form */}
             <Route path="/register" element={<RegisterForm />} />
+            {/* Login form */}
             <Route path="/login" element={<LoginForm />} />
-            {/* Update here: Render component inside PrivateRoute */}
+            {/* PrivateRoute wrap kela aahe authentication sathi */}
             <Route
               path="/profile"
               element={<PrivateRoute element={<UserProfile />} />}
