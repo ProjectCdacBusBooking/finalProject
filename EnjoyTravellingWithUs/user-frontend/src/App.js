@@ -16,6 +16,8 @@ import Booking from "./screens/Booking";
 import ConfirmBooking from "./screens/ConfirmBooking";
 import BookingSuccess from "./screens/BookingSuccess";
 import WalletPage from "./screens/WalletPage";
+import BookingHistoryPage from "./screens/BookingHistoryPage";
+import BookingCancellationPage from "./screens/BookingCancellationPage";
 
 function App() {
   return (
@@ -52,6 +54,13 @@ function App() {
             <Route path="/register" element={<RegisterForm />} />
 
             <Route path="/wallet" element={<WalletPage />} />
+
+            <Route path="/booking-history" element={<BookingHistoryPage />} />
+
+            <Route
+              path="/cancel-booking/:bookingId"
+              element={<BookingCancellationPage />}
+            />
 
             {/* Login form */}
             <Route path="/login" element={<LoginForm />} />
