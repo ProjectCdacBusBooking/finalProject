@@ -63,4 +63,14 @@ public class UserService {
         }
         return null; // Invalid Credentials
     }
+    
+    /**
+     * ✅ User Logout Method
+     * 📌 User ला Logout करतो. (Session invalidate)
+     */
+    public boolean logoutUser(Long userId) {
+        // जर User सापडला आणि त्याचा session successfully end झाला तर true return करतो.
+        // TODO: Session management implement करायचं आहे.
+        return true; // Placeholder for now.
+    }
 }

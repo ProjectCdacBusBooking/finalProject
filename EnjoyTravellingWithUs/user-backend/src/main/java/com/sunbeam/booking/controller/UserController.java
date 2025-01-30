@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sunbeam.booking.dto.LoginDTO;
@@ -52,6 +53,21 @@ public class UserController {
             return ResponseEntity.ok(userDTO); // Login Successful
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("❌ Invalid Email or Password!");
+        }
+    }
+    
+    /**
+     * ✅ User Logout API
+     * 📌 User ला Logout करून Session invalidate करतो.
+     * 🟢 URL: POST /api/users/logout
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<String> logoutUser(@RequestParam Long userId) {
+        boolean isLoggedOut = userService.logoutUser(userId);
+        if (isLoggedOut) {
+            return ResponseEntity.ok("✅ Successfully Logged Out!");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ Logout Failed!");
         }
     }
 }
