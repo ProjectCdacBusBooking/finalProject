@@ -15,6 +15,7 @@ import BusDetails from "./screens/BusDetails";
 import Booking from "./screens/Booking";
 import ConfirmBooking from "./screens/ConfirmBooking";
 import BookingSuccess from "./screens/BookingSuccess";
+import WalletPage from "./screens/WalletPage";
 
 function App() {
   return (
@@ -49,6 +50,8 @@ function App() {
 
             {/* Registration form */}
             <Route path="/register" element={<RegisterForm />} />
+
+            <Route path="/wallet" element={<WalletPage />} />
 
             {/* Login form */}
             <Route path="/login" element={<LoginForm />} />
