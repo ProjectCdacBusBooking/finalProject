@@ -73,4 +73,21 @@ public class UserService {
         // TODO: Session management implement करायचं आहे.
         return true; // Placeholder for now.
     }
+    
+    /**
+     * ✅ Get User Profile Method
+     * 📌 User चं Profile डेटा Database कडून घेऊन UserDTO मध्ये Set करतो.
+     */
+    public UserDTO getUserProfile(Long userId) {
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            UserDTO userDTO = new UserDTO();
+            userDTO.setFullName(user.getFullName());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setPhone(user.getPhone());
+            return userDTO; // Return User Profile
+        }
+        return null; // Profile Not Found
+    }
 }

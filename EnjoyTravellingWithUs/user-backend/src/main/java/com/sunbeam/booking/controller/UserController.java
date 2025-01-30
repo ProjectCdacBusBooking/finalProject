@@ -3,6 +3,8 @@ package com.sunbeam.booking.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,6 +70,21 @@ public class UserController {
             return ResponseEntity.ok("✅ Successfully Logged Out!");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("❌ Logout Failed!");
+        }
+    }
+    
+    /**
+     * ✅ Get User Profile API
+     * 📌 User चं Profile डेटा परत करतो.
+     * 🟢 URL: GET /api/users/profile/{userId}
+     */
+    @GetMapping("/profile/{userId}")
+    public ResponseEntity<UserDTO> getUserProfile(@PathVariable Long userId) {
+        UserDTO userDTO = userService.getUserProfile(userId);
+        if (userDTO != null) {
+            return ResponseEntity.ok(userDTO); // Profile Found
+        } else {
+            return ResponseEntity.notFound().build(); // Profile Not Found
         }
     }
 }
