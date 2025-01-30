@@ -18,6 +18,7 @@ import BookingSuccess from "./screens/BookingSuccess";
 import WalletPage from "./screens/WalletPage";
 import BookingHistoryPage from "./screens/BookingHistoryPage";
 import BookingCancellationPage from "./screens/BookingCancellationPage";
+import NotificationsPage from "./screens/NotificationPage";
 
 function App() {
   return (
@@ -56,6 +57,8 @@ function App() {
             <Route path="/wallet" element={<WalletPage />} />
 
             <Route path="/booking-history" element={<BookingHistoryPage />} />
+
+            <Route path="/notifications" element={<NotificationsPage />} />
 
             <Route
               path="/cancel-booking/:bookingId"
