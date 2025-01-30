@@ -14,6 +14,7 @@ import SearchResults from "./screens/SearchResults";
 import BusDetails from "./screens/BusDetails";
 import Booking from "./screens/Booking";
 import ConfirmBooking from "./screens/ConfirmBooking";
+import BookingSuccess from "./screens/BookingSuccess";
 
 function App() {
   return (
@@ -27,8 +28,10 @@ function App() {
           <Routes>
             {/* Home Page */}
             <Route exact path="/" element={<HomePage />} />
+
             {/* Search results page */}
             <Route path="/search" element={<SearchResults />} />
+
             {/* Bus details page */}
             <Route path="/bus/:busId" element={<BusDetails />} />
 
@@ -39,10 +42,17 @@ function App() {
               element={<ConfirmBooking />}
             />
 
+            <Route
+              path="/booking-success/:bookingId"
+              element={<BookingSuccess />}
+            />
+
             {/* Registration form */}
             <Route path="/register" element={<RegisterForm />} />
+
             {/* Login form */}
             <Route path="/login" element={<LoginForm />} />
+
             {/* PrivateRoute wrap kela aahe authentication sathi */}
             <Route
               path="/profile"
