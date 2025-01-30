@@ -1,5 +1,3 @@
-// src/components/Auth/LoginForm.jsx
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../services/authService";
@@ -9,7 +7,8 @@ const LoginForm = () => {
     email: "",
     password: "",
   });
-  const history = useNavigate();
+  const [error, setError] = useState(""); // State for error messages
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setCredentials({
@@ -20,17 +19,23 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(""); // Clear previous errors
+    if (!credentials.email || !credentials.password) {
+      setError("Please fill in both fields.");
+      return;
+    }
     try {
       await loginUser(credentials);
-      history.push("/profile"); // Redirect to profile page after successful login
+      navigate("/profile"); // Redirect to profile page after successful login
     } catch (error) {
-      console.error("Login Error:", error);
+      setError("Invalid email or password."); // Display error message
     }
   };
 
   return (
     <div>
       <h2>Login</h2>
+      {error && <p style={{ color: "red" }}>{error}</p>} {/* Display error */}
       <form onSubmit={handleSubmit}>
         <input
           type="email"

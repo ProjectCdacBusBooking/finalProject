@@ -1,12 +1,10 @@
-// 📂 src/screens/SearchResults.jsx
-
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function SearchResults() {
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Use navigate instead of useHistory
   const [buses, setBuses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -40,7 +38,7 @@ function SearchResults() {
   }, [location.search]);
 
   const handleViewDetails = (busId) => {
-    navigate(`/bus/${busId}`);
+    navigate(`/bus/${busId}`); // Use navigate instead of history.push
   };
 
   return (

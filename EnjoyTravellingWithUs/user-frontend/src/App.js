@@ -24,13 +24,14 @@ function App() {
             <Route path="/bus/:busId" element={<BusDetails />} />
             <Route path="/register" element={<RegisterForm />} />
             <Route path="/login" element={<LoginForm />} />
+            {/* Update here: Render component inside PrivateRoute */}
             <Route
               path="/profile"
-              element={<PrivateRoute component={<UserProfile />} />}
+              element={<PrivateRoute element={<UserProfile />} />}
             />
             <Route
               path="/update-profile"
-              element={<PrivateRoute component={<UpdateProfileForm />} />}
+              element={<PrivateRoute element={<UpdateProfileForm />} />}
             />
           </Routes>
         </div>

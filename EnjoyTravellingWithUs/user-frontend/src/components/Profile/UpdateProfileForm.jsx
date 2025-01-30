@@ -1,5 +1,3 @@
-// src/components/Profile/UpdateProfileForm.jsx
-
 import React, { useState, useEffect } from "react";
 import {
   getUserProfile,
@@ -12,10 +10,19 @@ const UpdateProfileForm = () => {
     email: "",
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     const fetchUserProfile = async () => {
-      const profile = await getUserProfile();
-      setProfileData(profile);
+      try {
+        const profile = await getUserProfile();
+        setProfileData(profile);
+      } catch (error) {
+        setError("Failed to load profile");
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchUserProfile();
   }, []);
@@ -37,9 +44,14 @@ const UpdateProfileForm = () => {
     }
   };
 
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div>
       <h2>Update Profile</h2>
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
