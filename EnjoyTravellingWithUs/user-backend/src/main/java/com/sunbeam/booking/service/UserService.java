@@ -1,13 +1,16 @@
 package com.sunbeam.booking.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.sunbeam.booking.dto.LoginDTO;
 import com.sunbeam.booking.dto.UserDTO;
 import com.sunbeam.booking.entity.User;
 import com.sunbeam.booking.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 
 /**
  * 📝 UserService - User Authentication संबंधित Service Methods
@@ -18,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
 	@Autowired
-    private  UserRepository userRepository;
+	private final UserRepository userRepository = null;
 
     /**
      * ✅ User Registration Method
@@ -37,5 +40,27 @@ public class UserService {
 
         userRepository.save(user);
         return true;
+    }
+    
+    /**
+     * ✅ User Login Method
+     * 📌 Email & Password verify करून User ची माहिती परत पाठवतो.
+     */
+    public UserDTO loginUser(LoginDTO loginDTO) {
+        Optional<User> userOpt = userRepository.findByEmail(loginDTO.getEmail());
+        
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            
+            
+            if (user.getPassword().equals(loginDTO.getPassword())) { 
+                UserDTO userDTO = new UserDTO();
+                userDTO.setFullName(user.getFullName());
+                userDTO.setEmail(user.getEmail());
+                userDTO.setPhone(user.getPhone());
+                return userDTO; // Login Successful
+            }
+        }
+        return null; // Invalid Credentials
     }
 }
