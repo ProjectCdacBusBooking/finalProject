@@ -24,10 +24,12 @@ import ETAUpdatesPage from "./screens/ETAUpdatesPage";
 import SeatAvailability from "./components/SeatAvailability";
 import SeatSelection from "./components/SeatSelection";
 import BookingHistory from "./components/BookingHistory";
+import PushNotification from "./components/PushNotification";
 
 import "./styles/seatAvailability.css";
 import "./styles/seatSelection.css";
 import "./styles/bookingHistory.css";
+import "./styles/pushNotification.css";
 
 const App = () => {
   const [busId, setBusId] = useState(1);
@@ -76,7 +78,7 @@ const App = () => {
               element={<NotificationsPage />}
             />
 
-            {/* Authentication */}
+            {/* Authentication Routes */}
             <Route path="/register" element={<RegisterForm />} />
             <Route path="/login" element={<LoginForm />} />
 
@@ -141,6 +143,9 @@ const App = () => {
               path="/user-booking-history"
               element={<BookingHistory userId={userId} />}
             />
+
+            {/* Push Notification */}
+            <Route path="/push-notifications" element={<PushNotification />} />
           </Routes>
         </div>
       </div>
