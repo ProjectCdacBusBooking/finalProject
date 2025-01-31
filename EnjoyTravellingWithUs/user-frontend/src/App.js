@@ -1,5 +1,3 @@
-// 📂 user-frontend/src/App.js
-
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import RegisterForm from "./components/Auth/RegisterForm";
@@ -25,7 +23,9 @@ import SeatAvailability from "./components/SeatAvailability";
 import SeatSelection from "./components/SeatSelection";
 import BookingHistory from "./components/BookingHistory";
 import PushNotification from "./components/PushNotification";
+import RatingReview from "./components/RatingReview";
 
+import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap
 import "./styles/seatAvailability.css";
 import "./styles/seatSelection.css";
 import "./styles/bookingHistory.css";
@@ -35,7 +35,8 @@ const App = () => {
   const [busId, setBusId] = useState(1);
   const [selectedDate, setSelectedDate] = useState("2025-02-01");
   const [availableSeats, setAvailableSeats] = useState([]);
-  const [userId, setUserId] = useState(1); // Mock userId for testing
+  const [userId, setUserId] = useState(1); // Mock userId
+  const [selectedBusId, setSelectedBusId] = useState(101); // Mock BusId for Rating & Review
 
   // Function to handle seat availability update
   const handleSeatAvailability = (seats) => {
@@ -96,12 +97,15 @@ const App = () => {
             <Route
               path="/seat-availability"
               element={
-                <div>
-                  <h1>Bus Booking System</h1>
-                  <div>
-                    <label htmlFor="busId">Select Bus:</label>
+                <div className="text-center">
+                  <h1 className="mb-4">Bus Booking System</h1>
+                  <div className="mb-3">
+                    <label htmlFor="busId" className="form-label">
+                      Select Bus:
+                    </label>
                     <select
                       id="busId"
+                      className="form-select"
                       value={busId}
                       onChange={(e) => setBusId(Number(e.target.value))}
                     >
@@ -111,11 +115,14 @@ const App = () => {
                     </select>
                   </div>
 
-                  <div>
-                    <label htmlFor="date">Select Date:</label>
+                  <div className="mb-3">
+                    <label htmlFor="date" className="form-label">
+                      Select Date:
+                    </label>
                     <input
                       type="date"
                       id="date"
+                      className="form-control"
                       value={selectedDate}
                       onChange={(e) => setSelectedDate(e.target.value)}
                     />
@@ -146,6 +153,12 @@ const App = () => {
 
             {/* Push Notification */}
             <Route path="/push-notifications" element={<PushNotification />} />
+
+            {/* Rating & Review */}
+            <Route
+              path="/rate-bus"
+              element={<RatingReview busId={selectedBusId} userId={userId} />}
+            />
           </Routes>
         </div>
       </div>

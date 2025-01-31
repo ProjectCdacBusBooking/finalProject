@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap
 
 const BookingHistory = ({ userId }) => {
   const [bookingHistory, setBookingHistory] = useState([]);
@@ -15,39 +16,76 @@ const BookingHistory = ({ userId }) => {
         console.error("Error fetching booking history", error);
       }
     };
+
     fetchBookingHistory();
   }, [userId]);
 
   // Handle booking cancellation
   const cancelBooking = async (bookingId) => {
     try {
-      const cancelData = { bookingId };
-      const response = await axios.post("/api/cancel-booking", cancelData);
-      setCancelMessage(response.data);
-      setBookingHistory(
-        bookingHistory.filter((booking) => booking.bookingId !== bookingId)
-      ); // Remove the cancelled booking
+      const response = await axios.post("/api/cancel-booking", { bookingId });
+
+      if (response.data.success) {
+        setCancelMessage("Booking canceled successfully.");
+        setBookingHistory((prevHistory) =>
+          prevHistory.filter((booking) => booking.bookingId !== bookingId)
+        );
+      } else {
+        setCancelMessage("Failed to cancel booking. Please try again.");
+      }
     } catch (error) {
       console.error("Error cancelling booking", error);
+      setCancelMessage("Error cancelling booking. Please try again.");
     }
   };
 
   return (
-    <div className="booking-history">
-      <h3>Your Booking History</h3>
-      {cancelMessage && <p>{cancelMessage}</p>}
-      <ul>
-        {bookingHistory.map((booking) => (
-          <li key={booking.bookingId}>
-            <p>Booking ID: {booking.bookingId}</p>
-            <p>Date: {booking.date}</p>
-            <p>Seats: {booking.seatNumbers}</p>
-            <button onClick={() => cancelBooking(booking.bookingId)}>
-              Cancel Booking
-            </button>
-          </li>
-        ))}
-      </ul>
+    <div className="container mt-4">
+      <h3 className="text-center mb-4">Your Booking History</h3>
+
+      {cancelMessage && (
+        <div className="alert alert-info text-center">{cancelMessage}</div>
+      )}
+
+      {bookingHistory.length > 0 ? (
+        <div className="table-responsive">
+          <table className="table table-bordered table-hover text-center">
+            <thead className="table-dark">
+              <tr>
+                <th>Booking ID</th>
+                <th>Date</th>
+                <th>Seats</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bookingHistory.map((booking) => (
+                <tr key={booking.bookingId}>
+                  <td>{booking.bookingId}</td>
+                  <td>{booking.date}</td>
+                  <td>
+                    {Array.isArray(booking.seatNumbers)
+                      ? booking.seatNumbers.join(", ")
+                      : booking.seatNumbers}
+                  </td>
+                  <td>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => cancelBooking(booking.bookingId)}
+                    >
+                      Cancel Booking
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="alert alert-warning text-center">
+          No bookings found.
+        </div>
+      )}
     </div>
   );
 };
