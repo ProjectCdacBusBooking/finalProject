@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const SeatAvailability = ({ busId, selectedDate }) => {
+const SeatAvailability = ({ busId, selectedDate, onSeatsFetched }) => {
   const [seatData, setSeatData] = useState(null);
 
   useEffect(() => {
-    // Fetch seat availability when the busId and selectedDate change
+    // Fetch available seats from API
     const fetchSeatData = async () => {
       try {
         const response = await axios.get(
           `/api/seat-availability/${busId}/${selectedDate}`
         );
         setSeatData(response.data);
+        onSeatsFetched(response.data.availableSeats); // Pass data to parent component
       } catch (error) {
         console.error("Error fetching seat availability", error);
       }
     };
 
     fetchSeatData();
-  }, [busId, selectedDate]);
+  }, [busId, selectedDate, onSeatsFetched]);
 
   return (
     <div className="seat-availability">
@@ -26,19 +27,13 @@ const SeatAvailability = ({ busId, selectedDate }) => {
         <div>
           <h3>Seats Available</h3>
           <p>Total Seats: {seatData.totalSeats}</p>
-          <p>Available Seats: {seatData.availableSeats}</p>
+          <p>Available Seats: {seatData.availableSeats.length}</p>
 
-          {/* Seat selection logic */}
+          {/* Display available seats */}
           <div className="seats">
-            {/* Simple visualization of seat availability */}
-            {Array.from({ length: seatData.totalSeats }).map((_, index) => (
-              <div
-                key={index}
-                className={`seat ${
-                  index < seatData.availableSeats ? "available" : "unavailable"
-                }`}
-              >
-                {index + 1}
+            {seatData.availableSeats.map((seat, index) => (
+              <div key={index} className="seat available">
+                {seat}
               </div>
             ))}
           </div>

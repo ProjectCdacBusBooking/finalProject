@@ -23,13 +23,17 @@ import LiveLocationPage from "./screens/LiveLocationPage";
 import ETAUpdatesPage from "./screens/ETAUpdatesPage";
 import SeatAvailability from "./components/SeatAvailability";
 import SeatSelection from "./components/SeatSelection";
+import BookingHistory from "./components/BookingHistory";
+
 import "./styles/seatAvailability.css";
 import "./styles/seatSelection.css";
+import "./styles/bookingHistory.css";
 
 const App = () => {
   const [busId, setBusId] = useState(1);
   const [selectedDate, setSelectedDate] = useState("2025-02-01");
-  const [availableSeats, setAvailableSeats] = useState(0);
+  const [availableSeats, setAvailableSeats] = useState([]);
+  const [userId, setUserId] = useState(1); // Mock userId for testing
 
   // Function to handle seat availability update
   const handleSeatAvailability = (seats) => {
@@ -97,7 +101,7 @@ const App = () => {
                     <select
                       id="busId"
                       value={busId}
-                      onChange={(e) => setBusId(e.target.value)}
+                      onChange={(e) => setBusId(Number(e.target.value))}
                     >
                       <option value={1}>Bus 1</option>
                       <option value={2}>Bus 2</option>
@@ -119,7 +123,7 @@ const App = () => {
                   <SeatAvailability
                     busId={busId}
                     selectedDate={selectedDate}
-                    onSeatAvailability={handleSeatAvailability}
+                    onSeatsFetched={handleSeatAvailability}
                   />
 
                   {/* Seat Selection */}
@@ -130,6 +134,12 @@ const App = () => {
                   />
                 </div>
               }
+            />
+
+            {/* Booking History */}
+            <Route
+              path="/user-booking-history"
+              element={<BookingHistory userId={userId} />}
             />
           </Routes>
         </div>

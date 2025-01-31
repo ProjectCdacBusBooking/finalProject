@@ -1,0 +1,37 @@
+.booking-history {
+    margin: 20px;
+  }
+  
+  .booking-history ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .booking-history li {
+    background-color: #f1f1f1;
+    padding: 15px;
+    margin-bottom: 10px;
+  }
+  
+  button {
+    padding: 8px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #d32f2f;
+  }
+
+  .booking-history {
+    padding: 20px;
+    max-width: 500px;
+    margin: auto;
+  }
+  
+  .booking-item {
+    border: 1px solid
+  }  
+  

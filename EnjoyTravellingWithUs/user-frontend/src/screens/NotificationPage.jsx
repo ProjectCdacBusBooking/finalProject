@@ -174,3 +174,62 @@ function NotificationsPage({ match }) {
 }
 
 export default NotificationsPage;
+
+/*
+
+import React, { useState, useEffect } from "react";
+import NotificationService from "../services/NotificationService";
+
+const Notifications = ({ userId }) => {
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    // Fetch notifications when the component mounts
+    const fetchNotifications = async () => {
+      try {
+        const data = await NotificationService.getNotifications(userId);
+        setNotifications(data);
+      } catch (error) {
+        console.error("Failed to load notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+  }, [userId]);
+
+  const handleMarkAsRead = async (notificationId) => {
+    try {
+      await NotificationService.markNotificationsAsRead(notificationId);
+      setNotifications((prevNotifications) =>
+        prevNotifications.filter((notif) => notif.id !== notificationId)
+      );
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
+  };
+
+  return (
+    <div className="notifications-container">
+      <h3>Your Notifications</h3>
+      {notifications.length === 0 ? (
+        <p>No notifications yet.</p>
+      ) : (
+        <ul>
+          {notifications.map((notif) => (
+            <li key={notif.id}>
+              <p>{notif.message}</p>
+              <button onClick={() => handleMarkAsRead(notif.id)}>
+                Mark as Read
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+export default Notifications;
+
+
+*/
