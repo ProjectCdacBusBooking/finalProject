@@ -21,71 +21,62 @@ import BookingCancellationPage from "./screens/BookingCancellationPage";
 import NotificationsPage from "./screens/NotificationPage";
 import LiveLocationPage from "./screens/LiveLocationPage";
 import ETAUpdatesPage from "./screens/ETAUpdatesPage";
-import SeatAvailability from "./components/SeatAvailability"; // Added import for SeatAvailability
-import "./styles/seatAvailability.css"; // Added import for SeatAvailability CSS
+import SeatAvailability from "./components/SeatAvailability";
+import SeatSelection from "./components/SeatSelection";
+import "./styles/seatAvailability.css";
+import "./styles/seatSelection.css";
 
 const App = () => {
-  const [busId, setBusId] = useState(1); // Example busId
-  const [selectedDate, setSelectedDate] = useState("2025-02-01"); // Example date
+  const [busId, setBusId] = useState(1);
+  const [selectedDate, setSelectedDate] = useState("2025-02-01");
+  const [availableSeats, setAvailableSeats] = useState(0);
+
+  // Function to handle seat availability update
+  const handleSeatAvailability = (seats) => {
+    setAvailableSeats(seats);
+  };
 
   return (
     <Router>
-      {/* Navbar ha top section la render honar */}
       <Navbar />
       <div className="d-flex">
-        {/* Sidebar ha left side la render honar */}
         <Sidebar />
         <div className="container mt-4" style={{ marginLeft: "260px" }}>
           <Routes>
-            {/* Home Page */}
+            {/* Main Routes */}
             <Route exact path="/" element={<HomePage />} />
-
-            {/* Search results page */}
             <Route path="/search" element={<SearchResults />} />
-
-            {/* Bus details page */}
             <Route path="/bus/:busId" element={<BusDetails />} />
-
             <Route path="/book/:busId" element={<Booking />} />
-
             <Route
               path="/confirm-booking/:bookingId"
               element={<ConfirmBooking />}
             />
-
             <Route
               path="/booking-success/:bookingId"
               element={<BookingSuccess />}
             />
-
-            {/* Registration form */}
-            <Route path="/register" element={<RegisterForm />} />
-
             <Route path="/wallet" element={<WalletPage />} />
-
             <Route path="/booking-history" element={<BookingHistoryPage />} />
-
+            <Route
+              path="/cancel-booking/:bookingId"
+              element={<BookingCancellationPage />}
+            />
             <Route
               path="/buses/:busId/live-location"
               element={<LiveLocationPage />}
             />
-
             <Route path="/buses/:busId/eta" element={<ETAUpdatesPage />} />
-
             <Route
               path="/notifications/:userId"
               element={<NotificationsPage />}
             />
 
-            <Route
-              path="/cancel-booking/:bookingId"
-              element={<BookingCancellationPage />}
-            />
-
-            {/* Login form */}
+            {/* Authentication */}
+            <Route path="/register" element={<RegisterForm />} />
             <Route path="/login" element={<LoginForm />} />
 
-            {/* PrivateRoute wrap kela aahe authentication sathi */}
+            {/* Private Routes */}
             <Route
               path="/profile"
               element={<PrivateRoute element={<UserProfile />} />}
@@ -95,13 +86,12 @@ const App = () => {
               element={<PrivateRoute element={<UpdateProfileForm />} />}
             />
 
-            {/* Seat Availability component */}
+            {/* Seat Availability & Selection */}
             <Route
               path="/seat-availability"
               element={
                 <div>
                   <h1>Bus Booking System</h1>
-                  {/* Date and bus selection (for the sake of this example, we are hardcoding these values) */}
                   <div>
                     <label htmlFor="busId">Select Bus:</label>
                     <select
@@ -125,8 +115,19 @@ const App = () => {
                     />
                   </div>
 
-                  {/* Display seat availability */}
-                  <SeatAvailability busId={busId} selectedDate={selectedDate} />
+                  {/* Seat Availability Check */}
+                  <SeatAvailability
+                    busId={busId}
+                    selectedDate={selectedDate}
+                    onSeatAvailability={handleSeatAvailability}
+                  />
+
+                  {/* Seat Selection */}
+                  <SeatSelection
+                    busId={busId}
+                    selectedDate={selectedDate}
+                    availableSeats={availableSeats}
+                  />
                 </div>
               }
             />
