@@ -17,23 +17,23 @@ public class Bus {
     private Long id; // Bus ID (Primary Key)
 
     @Column(nullable = false)
-    private String name; // Bus che naav
+    private String name; // Bus Name
 
     @Column(nullable = false)
-    private String source; // Suratnache thikaan (udaharan: Mumbai)
+    private String source; // Source location (e.g., Mumbai)
 
     @Column(nullable = false)
-    private String destination; // Pochanyache thikaan (udaharan: Pune)
+    private String destination; // Destination location (e.g., Pune)
 
     @Column(nullable = false)
-    private String departureTime; // Suratnyachi vel (HH:mm format)
+    private String departureTime; // Departure time (HH:mm format)
 
     @Column(nullable = false)
-    private int totalSeats; // Bus madhil ekun seats
+    private int totalSeats; // Total number of seats
 
     @Column(nullable = false)
-    private int availableSeats; // Upyog karti seats
+    private int availableSeats; // Available seats in the bus
 
     @Column(nullable = false)
-    private double fare; // Tikeet price
+    private double fare; // Ticket price
 }

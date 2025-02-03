@@ -1,15 +1,12 @@
 package com.sunbeam.booking.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
-@Data
+@Table(name = "rating_reviews")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class RatingReview {
@@ -17,10 +14,18 @@ public class RatingReview {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long userId;
-    private Long busId;
-    private int rating; // Rating between 1 and 5
-    private String review;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;  // User who gave the rating
 
-    // Getters and Setters
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bus_id", nullable = false)
+    private Bus bus;  // Bus being rated
+    
+    @Column(nullable = false)
+    private int rating;  // Rating between 1 and 5
+
+    @Column(length = 500)
+    private String review;  // Review text
 }

@@ -9,5 +9,4 @@ public class BookingConfirmationDTO {
     private String seatNumbers;  // Comma separated seat numbers
     private String status;
     private String message;
-
 }

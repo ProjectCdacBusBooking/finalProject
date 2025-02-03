@@ -19,7 +19,7 @@ public class RatingReviewService {
         ratingReview.setBusId(ratingReviewDTO.getBusId());
         ratingReview.setRating(ratingReviewDTO.getRating());
         ratingReview.setReview(ratingReviewDTO.getReview());
-        
+
         return ratingReviewRepository.save(ratingReview);
     }
 }

@@ -9,5 +9,4 @@ public class BookingHistoryDTO {
     private int bookingId;
     private String date;
     private String seatNumbers;
-
 }

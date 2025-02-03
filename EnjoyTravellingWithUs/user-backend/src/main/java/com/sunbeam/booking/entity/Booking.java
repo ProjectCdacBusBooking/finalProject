@@ -16,27 +16,25 @@ public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Booking ID (Primary Key)
-    
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private Long id; 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;  // User who made the booking
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bus_id", nullable = false)
+    private Bus bus;  // Bus being booked
 
     @Column(nullable = false)
-    private Long busId; // Book keleli bus ID
+    private String seatNumber; // Selected seat number(s)
 
     @Column(nullable = false)
-    private int selectedSeats; // Nivadlelya seats chi sankhya
+    private String paymentMethod; // Payment Method (Wallet, UPI, etc.)
 
     @Column(nullable = false)
-    private String seatNumber; // Nivadlelya seat number
+    private String bookingStatus; // Confirmed, Pending, Cancelled
 
-    @Column(nullable = false)
-    private String paymentMethod; // Payment method (Wallet, Credit Card, etc.)
-
-    @Column(nullable = false)
-    private String bookingStatus; // Booking status (Confirmed, Pending, Cancelled)
-
-    @Column(nullable = false)
-    private Date bookingDate; // Booking date (Date type)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date bookingDate = new Date(); // Default booking date set
 }

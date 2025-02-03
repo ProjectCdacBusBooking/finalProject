@@ -1,19 +1,23 @@
 package com.sunbeam.booking.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sunbeam.booking.dto.SeatAvailabilityDTO;
+import com.sunbeam.booking.entity.Bus;
+import com.sunbeam.booking.repository.BusRepository;
 
 @Service
 public class SeatAvailabilityService {
 
-    public SeatAvailabilityDTO checkSeatAvailability(int busId, String date) {
-        // For the sake of this example, we will return a mock seat availability.
-        // This should be fetched from the database with actual logic.
-        
-        SeatAvailabilityDTO seatAvailabilityDTO = new SeatAvailabilityDTO();
-        seatAvailabilityDTO.setTotalSeats(40);
-        seatAvailabilityDTO.setAvailableSeats(15); // Mock data, implement real logic later
-        return seatAvailabilityDTO;
+    @Autowired
+    private BusRepository busRepository;
+
+    public SeatAvailabilityDTO checkSeatAvailability(Long busId) {
+        Bus bus = busRepository.findById(busId).orElse(null);
+        if (bus != null) {
+            return new SeatAvailabilityDTO(bus.getTotalSeats(), bus.getAvailableSeats());
+        }
+        return null;
     }
 }

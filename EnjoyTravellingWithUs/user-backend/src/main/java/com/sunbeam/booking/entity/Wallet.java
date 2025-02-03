@@ -5,27 +5,29 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-
-/**
- * 📝 Wallet - Wallet Entity class
- * 📌 वॉलेट संबंधित डेटा संग्रहित करण्यासाठी वापरला जातो.
- */
-@Data
 @Entity
+@Table(name = "wallets")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Wallet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long walletId;
-    
-    @Column(nullable = false)
-    private Long userId;
+    private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     private double balance;
