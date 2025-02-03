@@ -1,11 +1,13 @@
 package com.sunbeam.booking.repository;
 
 import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.sunbeam.booking.entity.User;
+
+import com.sunbeam.booking.entity.Bus;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    List<User> findByEmail(String email);
+public interface BusRepository extends JpaRepository<Bus, Long> {
+    List<Bus> findByRouteContaining(String route);
 }
