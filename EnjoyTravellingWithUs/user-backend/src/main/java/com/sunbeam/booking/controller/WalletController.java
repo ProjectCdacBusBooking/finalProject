@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
  * 📌 Check Wallet Balance, Add Money, Make Payment आणि Transaction History संबंधित API.
  */
 @RestController
-@RequestMapping("/api/wallet")
+@RequestMapping("/wallet")
 @RequiredArgsConstructor
 public class WalletController {
 

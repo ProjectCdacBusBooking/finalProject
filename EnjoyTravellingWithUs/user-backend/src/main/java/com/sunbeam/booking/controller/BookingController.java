@@ -1,100 +1,75 @@
 package com.sunbeam.booking.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.sunbeam.booking.dto.BookingConfirmationRequest;
+import org.springframework.web.bind.annotation.*;
 import com.sunbeam.booking.dto.BookingDTO;
-import com.sunbeam.booking.dto.SeatSelectionRequest;
 import com.sunbeam.booking.service.BookingService;
 
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
-/**
- * 📝 BookingController - Booking संबंधित API Handlers
- * 📌 Seat Selection, Booking Confirmation, Booking Management API आहेत.
- */
 @RestController
-@RequestMapping("/bookings")
-@RequiredArgsConstructor
+@RequestMapping("/api/bookings")
+@CrossOrigin(origins = "http://localhost:3000")
 public class BookingController {
+    @Autowired
+    private BookingService bookingService;
 
-	@Autowired
-    private final BookingService bookingService;
+    @GetMapping
+    public ResponseEntity<List<BookingDTO>> getAllBookings() {
+        List<BookingDTO> bookings = bookingService.getAllBookings();
+        return ResponseEntity.ok(bookings);
+    }
 
-    /**
-     * ✅ Select Seats API
-     * 📌 वापरकर्ता बस सीट निवडतो.
-     * 🟢 URL: POST /api/bookings/select-seats
-     */
-    @PostMapping("/select-seats")
-    public ResponseEntity<?> selectSeats(@RequestBody SeatSelectionRequest request) {
-        boolean isSelected = bookingService.selectSeats(request);
-        if (isSelected) {
-            return ResponseEntity.ok("✅ Seats selected successfully!");
-        } else {
-            return ResponseEntity.status(400).body("❌ Seats selection failed. Please try again!");
+    @PostMapping
+    public ResponseEntity<BookingDTO> addBooking(@RequestBody BookingDTO bookingDTO) {
+        boolean isCreated = bookingService.createBooking(bookingDTO);
+        if (isCreated) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(bookingDTO);
         }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
-    
-    /**
-     * ✅ Confirm Booking API
-     * 📌 वापरकर्त्याने निवडलेली सीट बुक करून पेमेंट व बुकिंग जनरेशन करते.
-     * 🟢 URL: POST /api/bookings/confirm
-     */
-    @PostMapping("/confirm")
-    public ResponseEntity<?> confirmBooking(@RequestBody BookingConfirmationRequest request) {
-        boolean isConfirmed = bookingService.confirmBooking(request);
-        if (isConfirmed) {
-            return ResponseEntity.ok("✅ Booking confirmed successfully!");
-        } else {
-            return ResponseEntity.status(400).body("❌ Booking confirmation failed. Please try again!");
-        }
-    }
-    
-    /**
-     * ✅ Get Booking History API
-     * 📌 वापरकर्त्याच्या सर्व बुकिंग्स (हिस्ट्री) मिळवते.
-     * 🟢 URL: GET /api/bookings/history/{userId}
-     */
-    @GetMapping("/history/{userId}")
-    public ResponseEntity<?> getBookingHistory(@PathVariable Long userId) {
-        return ResponseEntity.ok(bookingService.getBookingHistory(userId));
-    }
-    
-    /**
-     * ✅ Cancel Booking & Refund Process API
-     * 📌 बुकिंग रद्द करून वापरकर्त्याला रिफंड प्रोसेस सुरु करते.
-     * 🟢 URL: POST /api/bookings/cancel/{bookingId}
-     */
-    @PostMapping("/cancel/{bookingId}")
-    public ResponseEntity<?> cancelBooking(@PathVariable Long bookingId) {
-        boolean cancelStatus = bookingService.cancelBooking(bookingId);
-        if (cancelStatus) {
-            return ResponseEntity.ok("✅ Booking cancelled successfully. Refund process initiated.");
-        } else {
-            return ResponseEntity.status(404).body("❌ Booking not found or already cancelled.");
-        }
-    }
-    
-    /**
-     * ✅ Get Booking Details API
-     * 📌 बुकिंग तपशील मिळवण्यासाठी वापरला जातो.
-     * 🟢 URL: GET /api/bookings/{bookingId}
-     */
-    @GetMapping("/{bookingId}")
-    public ResponseEntity<?> getBookingDetails(@PathVariable Long bookingId) {
-        BookingDTO bookingDTO = bookingService.getBookingDetails(bookingId);
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BookingDTO> getBookingById(@PathVariable Long id) {
+        BookingDTO bookingDTO = bookingService.getBookingById(id);
         if (bookingDTO != null) {
             return ResponseEntity.ok(bookingDTO);
         } else {
-            return ResponseEntity.status(404).body("❌ Booking not found.");
+            return ResponseEntity.notFound().build();
         }
+    }
+
+    @DeleteMapping("/cancel/{id}")
+    public ResponseEntity<Void> cancelBooking(@PathVariable Long id) {
+        boolean isCancelled = bookingService.cancelBooking(id);
+        if (isCancelled) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<BookingDTO>> getBookingsByUser(@PathVariable Long userId) {
+        List<BookingDTO> bookings = bookingService.getBookingsByUser(userId);
+        return ResponseEntity.ok(bookings);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<BookingDTO> createBooking(@RequestParam Long userId, @RequestParam Long busId,
+            @RequestParam String bookingDate, @RequestParam String seatNumber) {
+        BookingDTO bookingDTO = new BookingDTO(null, userId, busId, bookingDate, seatNumber);
+        boolean isCreated = bookingService.createBooking(bookingDTO);
+        if (isCreated) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(bookingDTO);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @GetMapping("/fare/calculate")
+    public ResponseEntity<Double> calculateFare(@RequestParam String source, @RequestParam String destination) {
+        double fare = bookingService.calculateFare(source, destination);
+        return ResponseEntity.ok(fare);
     }
 }

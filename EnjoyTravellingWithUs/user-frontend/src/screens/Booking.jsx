@@ -1,17 +1,15 @@
-// 📂 src/screens/Booking.jsx
-
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Replace useHistory with useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Booking() {
   const { busId } = useParams();
-  const navigate = useNavigate(); // Initialize navigate
-  //   const [bus, setBus] = useState(null);
+  const navigate = useNavigate();
   const [seats, setSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [booking, setBooking] = useState(null);
 
   useEffect(() => {
     const fetchSeats = async () => {
@@ -48,10 +46,33 @@ function Booking() {
         }
       );
       if (response.data.success) {
-        navigate(`/confirm-booking/${response.data.bookingId}`); // Use navigate to push to confirmation page
+        fetchBookingDetails(response.data.bookingId);
+        // Optional: navigate(`/confirm-booking/${response.data.bookingId}`);
       }
     } catch (err) {
       setError("Error processing booking. Please try again.");
+    }
+  };
+
+  const fetchBookingDetails = async (bookingId) => {
+    try {
+      const response = await axios.get(`/bookings/${bookingId}`); // Replace with your API endpoint
+      setBooking(response.data);
+    } catch (error) {
+      console.error("Error fetching booking details:", error);
+      setError("Error fetching booking details.");
+    }
+  };
+
+  const handleCancelBooking = async () => {
+    if (!booking) return;
+    try {
+      await axios.put(`/bookings/cancel/${booking.id}`); // Replace with your API endpoint
+      alert("Booking cancelled successfully!");
+      setBooking(null);
+      setSelectedSeats([]); // Optional: Clear selected seats
+    } catch (error) {
+      alert("Error cancelling booking. Please try again.");
     }
   };
 
@@ -65,6 +86,16 @@ function Booking() {
         </div>
       ) : error ? (
         <div className="alert alert-danger">{error}</div>
+      ) : booking ? (
+        <div>
+          <h3>Booking Details</h3>
+          <p>Source: {booking.source}</p> {/* Replace with your booking data */}
+          <p>Destination: {booking.destination}</p>
+          <p>Travel Date: {booking.travelDate}</p>
+          <button onClick={handleCancelBooking} className="btn btn-danger">
+            Cancel Booking
+          </button>
+        </div>
       ) : (
         <div className="card shadow p-4">
           <h2 className="text-center text-primary">Select Your Seats</h2>
