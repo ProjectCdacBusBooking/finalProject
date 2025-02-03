@@ -1,37 +1,29 @@
 package com.sunbeam.booking.dto;
 
-import java.util.Date;
-
-import com.sunbeam.booking.entity.Booking;
-
+import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class BookingDTO {
-    private Long bookingId;
+    private Long id;
+
+    @NotEmpty(message = "User ID is required")
     private Long userId;
+
+    @NotEmpty(message = "Bus ID is required")
     private Long busId;
+
+    @NotEmpty(message = "Booking Date is required")
+    private String bookingDate;
+
+    @NotEmpty(message = "Seat Number is required")
     private String seatNumber;
-    private Date bookingDate;
-    private String status;
-
-    public BookingDTO(Long bookingId, Long userId, Long busId, String seatNumber, Date bookingDate, String status) {
-        this.bookingId = bookingId;
-        this.userId = userId;
-        this.busId = busId;
-        this.seatNumber = seatNumber;
-        this.bookingDate = bookingDate;
-        this.status = status;
-    }
-
-    public BookingDTO(Booking booking) {
-        this.bookingId = booking.getId();
-        this.userId = booking.getUser().getId();
-        this.busId = booking.getBusId();
-        this.seatNumber = booking.getSeatNumber();
-        this.bookingDate = booking.getBookingDate();
-        this.status = booking.getBookingStatus();
-    }
 }

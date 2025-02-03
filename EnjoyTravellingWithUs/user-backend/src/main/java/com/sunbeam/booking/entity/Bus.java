@@ -1,39 +1,36 @@
 package com.sunbeam.booking.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+
+import java.util.List;
 
 @Entity
 @Table(name = "buses")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@Builder
+@Getter
+@Setter
 public class Bus {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Bus ID (Primary Key)
+    private Long id;
+    private String busNumber;
+    private String route;
+    private String departureTime;
+    private String arrivalTime;
+    private int availableSeats;
+    private int capacity;
 
-    @Column(nullable = false)
-    private String name; // Bus Name
+    @OneToMany(mappedBy = "bus", cascade = CascadeType.ALL)
+    private List<Booking> bookings;
 
-    @Column(nullable = false)
-    private String source; // Source location (e.g., Mumbai)
-
-    @Column(nullable = false)
-    private String destination; // Destination location (e.g., Pune)
-
-    @Column(nullable = false)
-    private String departureTime; // Departure time (HH:mm format)
-
-    @Column(nullable = false)
-    private int totalSeats; // Total number of seats
-
-    @Column(nullable = false)
-    private int availableSeats; // Available seats in the bus
-
-    @Column(nullable = false)
-    private double fare; // Ticket price
+    
 }
