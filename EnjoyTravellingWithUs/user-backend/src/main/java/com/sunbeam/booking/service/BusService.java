@@ -17,9 +17,10 @@ public class BusService {
     @Autowired
     private FareCalculationService fareCalculationService;
 
+    @Autowired
     private Trie routeTrie;
 
-    @Autowired
+
     public void init() {
         routeTrie = new Trie();
         List<Bus> buses = repository.findAll();
