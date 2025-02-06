@@ -1,0 +1,3 @@
+[submodule "EnjoyTravellingWithUs/EnjoyTravellingWithUs/Admin/admin"]
+	path = EnjoyTravellingWithUs/EnjoyTravellingWithUs/Admin/admin
+	url = https://github.com/ProjectCdacBusBooking/finalProject.git
