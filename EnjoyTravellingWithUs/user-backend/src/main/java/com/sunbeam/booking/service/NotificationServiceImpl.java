@@ -1,12 +1,14 @@
 package com.sunbeam.booking.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sunbeam.booking.dto.NotificationDTO;
 import com.sunbeam.booking.entity.Notification;
 import com.sunbeam.booking.entity.User;
 import com.sunbeam.booking.exceptions.ResourceNotFoundException;
@@ -53,11 +55,19 @@ public class NotificationServiceImpl implements NotificationService {
      * ✅ Retrieves all notifications for a specific user.
      * - Uses optimized query for better performance.
      */
+    @Transactional(rollbackOn = Exception.class)
     @Override
-    @Transactional // ✅ Ensures Hibernate session is active while fetching data
-    public List<Notification> getUserNotifications(Long userId) {
+    public List<NotificationDTO> getUserNotifications(Long userId) {
         log.info("📩 Fetching notifications for user ID: {}", userId);
-        return notificationRepository.findByUserId(userId);
+        
+        List<Notification> notifications = notificationRepository.findByUserId(userId);
+        
+        return notifications.stream()
+            .map(n -> new NotificationDTO(n.getId(), n.getMessage(), n.isReadStatus(), n.getCreatedOn()))
+            .collect(Collectors.toList()); // ✅ Fix return type
     }
+
+
+
 
 }
