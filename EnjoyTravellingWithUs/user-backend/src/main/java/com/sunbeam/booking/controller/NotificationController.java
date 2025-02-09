@@ -1,21 +1,46 @@
 package com.sunbeam.booking.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import com.sunbeam.booking.entity.Notification;
-import com.sunbeam.booking.service.NotificationService;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.sunbeam.booking.dto.ApiResponse;
+import com.sunbeam.booking.entity.Notification;
+import com.sunbeam.booking.service.NotificationService;
+
 @RestController
-@RequestMapping("/notifications")
-@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/api/notifications")
+@CrossOrigin(origins = "http://localhost:3000") // ✅ Keeping React frontend compatibility
 public class NotificationController {
 
-    @Autowired
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
-    @GetMapping("/user/{userId}")
-    public List<Notification> getUserNotifications(@PathVariable Long userId) {
-        return notificationService.getNotificationsByUser(userId);
+    public NotificationController(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
+
+    /**
+     * ✅ Retrieves all notifications for a user
+     */
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<Notification>> getUserNotifications(@PathVariable Long userId) {
+        return ResponseEntity.ok(notificationService.getUserNotifications(userId));
+    }
+
+    /**
+     * ✅ Saves a new notification for a user
+     */
+    @PostMapping("/save")
+    public ResponseEntity<ApiResponse> saveNotification(@RequestParam Long userId, @RequestParam String message) {
+        notificationService.saveNotification(userId, message);
+        return ResponseEntity.ok(new ApiResponse("✅ Notification saved successfully!"));
+    }
+
 }

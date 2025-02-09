@@ -1,27 +1,28 @@
 package com.sunbeam.booking.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.*;
 
 @Entity
 @Table(name = "wallets")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@ToString(exclude = "user") // ✅ Prevents infinite recursion
+public class Wallet extends BaseEntity {
 
-@NamedQuery(name = "Wallet.findByUserId", query = "SELECT w FROM Wallet w WHERE w.user.id = :userId")
-public class Wallet {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
+    @Column(nullable = false)
     private double balance;
+
+    /**
+     * ✅ Method to safely update balance
+     */
+    public void updateBalance(double amount) {
+        this.balance = Math.max(0, this.balance + amount); // ✅ Ensures no negative balance
+    }
 }

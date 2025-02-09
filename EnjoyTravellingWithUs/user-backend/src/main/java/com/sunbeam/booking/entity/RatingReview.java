@@ -1,6 +1,8 @@
 package com.sunbeam.booking.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 
 @Entity
@@ -9,12 +11,9 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RatingReview {
+@ToString(exclude = {"user", "bus"}) // ✅ Prevents infinite recursion
+public class RatingReview extends BaseEntity { // ✅ Now extends BaseEntity
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;  // User who gave the rating
@@ -23,6 +22,7 @@ public class RatingReview {
     @JoinColumn(name = "bus_id", nullable = false)
     private Bus bus;  // Bus being rated
     
+    @Min(1) @Max(5) // ✅ Ensures valid rating between 1 and 5
     @Column(nullable = false)
     private int rating;  // Rating between 1 and 5
 

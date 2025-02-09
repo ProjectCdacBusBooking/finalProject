@@ -2,15 +2,11 @@ package com.sunbeam.booking.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Data
+@Data // ✅ Includes @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 public class WalletDTO {
     private Long userId;
     private double balance;
