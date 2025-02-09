@@ -1,63 +1,47 @@
 package com.sunbeam.booking.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import com.sunbeam.booking.dto.BusDTO;
-import com.sunbeam.booking.entity.Bus;
 import com.sunbeam.booking.service.BusService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/buses")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000") // ✅ Keeping React frontend compatibility
 public class BusController {
-    @Autowired
-    private BusService busService;
+
+    private static final Logger log = LoggerFactory.getLogger(BusController.class);
+    private final BusService busService;
+
+    public BusController(BusService busService) {
+        this.busService = busService;
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<BusDTO> addBus(@RequestBody BusDTO busDTO) {
+        log.info("📌 Adding new bus: {}", busDTO.getName());
+        BusDTO newBus = busService.save(busDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newBus);
+    }
 
     @GetMapping("/all")
     public ResponseEntity<List<BusDTO>> getAllBuses() {
-        List<BusDTO> buses = busService.findAll();
-        return ResponseEntity.ok(buses);
-    }
-
-    @PostMapping
-    public ResponseEntity<Bus> addBus(@RequestBody Bus bus) {
-        bus.setAvailableSeats(bus.getCapacity());
-        Bus newBus = busService.save(bus);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newBus);
+        return ResponseEntity.ok(busService.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<BusDTO> getBusById(@PathVariable Long id) {
-        BusDTO bus = busService.findBusDTOById(id);
-        if (bus != null) {
-            return ResponseEntity.ok(bus);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Bus> updateBus(@PathVariable Long id, @RequestBody Bus busDetails) {
-        Bus updatedBus = busService.updateBus(id, busDetails);
-        if (updatedBus != null) {
-            return ResponseEntity.ok(updatedBus);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(busService.findBusDTOById(id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBus(@PathVariable Long id) {
         busService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/search-routes")
-    public ResponseEntity<List<String>> searchBusRoutesByPrefix(@RequestParam String prefix) {
-        List<String> routes = busService.searchBusRoutesByPrefix(prefix);
-        return ResponseEntity.ok(routes);
     }
 }

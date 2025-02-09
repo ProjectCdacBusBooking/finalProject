@@ -1,7 +1,7 @@
 package com.sunbeam.booking.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,60 +11,59 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sunbeam.booking.dto.ApiResponse;
 import com.sunbeam.booking.dto.WalletDTO;
+import com.sunbeam.booking.exceptions.ResourceNotFoundException;
 import com.sunbeam.booking.service.WalletService;
 
 @RestController
-@RequestMapping("/api/wallet")
-@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/api/wallets")
+@CrossOrigin(origins = "http://localhost:3000") // ✅ Keeping React frontend compatibility
 public class WalletController {
-    @Autowired
-    private WalletService walletService;
-    
+
+    private static final Logger log = LoggerFactory.getLogger(WalletController.class);
+
+    private final WalletService walletService;
+
+    public WalletController(WalletService walletService) {
+        this.walletService = walletService;
+    }
+
+    /**
+     * ✅ **Get Wallet by User ID**
+     */
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getUserWallet(@PathVariable Long userId) {
+    public ResponseEntity<WalletDTO> getWalletByUserId(@PathVariable Long userId) {
+        log.info("📌 Fetching wallet for User ID: {}", userId);
         WalletDTO walletDTO = walletService.getWalletByUserId(userId);
-        if (walletDTO != null) {
-            return ResponseEntity.ok(walletDTO);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Wallet not found");
+        if (walletDTO == null) {
+            log.warn("⚠️ Wallet not found for User ID: {}", userId);
+            throw new ResourceNotFoundException("Wallet not found for User ID: " + userId);
         }
+        return ResponseEntity.ok(walletDTO);
     }
 
-    
-
+    /**
+     * ✅ **Add Funds to Wallet**
+     */
     @PostMapping("/add-funds")
-    public ResponseEntity<String> addFunds(@RequestParam Long userId, @RequestParam double amount) {
-        boolean isAdded = walletService.addFunds(userId, amount);
-        if (isAdded) {
-            return ResponseEntity.ok("✅ Funds Added Successfully!");
-        }
-        return ResponseEntity.status(400).body("❌ Adding Funds Failed!");
-    }
-    
-    @PostMapping("/withdraw-funds")
-    public ResponseEntity<String> withdrawFunds(@RequestParam Long userId, @RequestParam double amount) {
-        try {
-            boolean isWithdrawn = walletService.withdrawFunds(userId, amount);
-            if (isWithdrawn) {
-                return ResponseEntity.ok("✅ Funds Withdrawn Successfully!");
-            }
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-        return ResponseEntity.status(400).body("❌ Withdrawing Funds Failed!");
+    public ResponseEntity<ApiResponse> addFunds(@RequestParam Long userId, @RequestParam double amount) {
+        log.info("📌 Adding ₹{} to wallet for User ID: {}", amount, userId);
+        walletService.addFunds(userId, amount); // Throws Exception if user not found
+        return ResponseEntity.ok(new ApiResponse("✅ Funds added successfully."));
     }
 
-    @PostMapping("/deduct-funds")
-    public ResponseEntity<String> deductFunds(@RequestParam Long userId, @RequestParam double amount) {
-        try {
-            boolean isDeducted = walletService.deductFunds(userId, amount);
-            if (isDeducted) {
-                return ResponseEntity.ok("✅ Funds Deducted Successfully!");
-            }
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-        return ResponseEntity.status(400).body("❌ Deducting Funds Failed!");
+    /**
+     * ✅ **Withdraw Funds from Wallet**
+     */
+
+    @PostMapping("/withdraw-funds")
+    public ResponseEntity<ApiResponse> withdrawFunds(@RequestParam Long userId, @RequestParam double amount) {
+        log.info("📌 Withdrawing ₹{} from wallet for User ID: {}", amount, userId);
+        walletService.withdrawFunds(userId, amount); // Throws Exception if user not found
+        return ResponseEntity.ok(new ApiResponse("✅ Funds withdrawn successfully."));
     }
+
+
+    
 }
