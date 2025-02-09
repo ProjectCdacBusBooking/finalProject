@@ -1,123 +1,14 @@
-//package com.sunbeam.booking.service;
-//
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.mail.MailException;
-//import org.springframework.mail.javamail.JavaMailSender;
-//import org.springframework.mail.javamail.MimeMessageHelper;
-//import org.springframework.stereotype.Service;
-//
-//import jakarta.mail.MessagingException;
-//import jakarta.mail.internet.MimeMessage;
-//
-//@Service
-//public class EmailNotificationServiceImpl implements EmailNotificationService {
-//
-//    private static final Logger log = LoggerFactory.getLogger(EmailNotificationServiceImpl.class);
-//
-//    @Autowired
-//    private JavaMailSender mailSender;
-//
-//    /**
-//     * सामान्य ईमेल सेंड करण्यासाठी (Simple Email Sending)
-//     */
-//    @Override
-//    public void sendEmail(String to, String subject, String body) {
-//        try {
-//            MimeMessage message = mailSender.createMimeMessage();
-//            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-//            helper.setTo(to);
-//            helper.setSubject(subject);
-//            helper.setText(body, true);
-//            helper.setFrom("your-email@gmail.com");
-//
-//            log.info("📧 Sending email to: {}", to);
-//            log.info("📧 Subject: {}", subject);
-//            log.info("📧 Body: {}", body);
-//
-//            mailSender.send(message);
-//            log.info("✅ Email sent successfully!");
-//        } catch (MessagingException | MailException e) {
-//            log.error("❌ Email failed: {}", e.getMessage());
-//        }
-//    }
-//
-//    /**
-//     * OTP साठी ईमेल (OTP Email)
-//     */
-//    @Override
-//    public void sendOTP(String toEmail, String otp) {
-//        String subject = "🔐 Your OTP Code";
-//        String body = "Hello,\n\nYour OTP for verification is: " + otp + 
-//                      "\nPlease do not share this with anyone.\n\nThank you!";
-//        sendEmail(toEmail, subject, body);
-//    }
-//
-//    /**
-//     * बुकिंग कन्फर्मेशन ईमेल (Booking Confirmation Email)
-//     */
-//    @Override
-//    public void sendBookingConfirmation(String toEmail, String busDetails, String bookingId) {
-//        String subject = "🚌 Booking Confirmed!";
-//        String body = "🎉 Your booking is confirmed! 🎉\n\n" +
-//                      "🚌 Bus Details: " + busDetails + "\n" +
-//                      "📌 Booking ID: " + bookingId + "\n\n" +
-//                      "✅ Please arrive 30 minutes before departure.\n" +
-//                      "Thank you for choosing our service! 🚍";
-//        sendEmail(toEmail, subject, body);
-//    }
-//
-//    /**
-//     * बस आगमनाची सूचना (Bus Arrival Reminder)
-//     */
-//    @Override
-//    public void sendArrivalReminder(String toEmail, String busDetails) {
-//        String subject = "🚏 Your Bus is Arriving Soon!";
-//        String body = "🔔 Reminder! Your bus is arriving soon.\n\n" +
-//                      "🚌 Bus Details: " + busDetails + "\n" +
-//                      "⏳ Please be ready at your stop.\n\n" +
-//                      "Safe travels! 🚍";
-//        sendEmail(toEmail, subject, body);
-//    }
-//
-//    /**
-//     * प्रवासानंतर रिव्ह्यू रिक्वेस्ट (Review Request)
-//     */
-//    @Override
-//    public void sendReviewRequest(String toEmail, String busDetails) {
-//        String subject = "⭐ Rate Your Trip!";
-//        String body = "🙏 We hope you had a great journey! 🚍\n\n" +
-//                      "🚌 Bus Details: " + busDetails + "\n\n" +
-//                      "📝 Please take a moment to rate and review your experience.\n" +
-//                      "🔗 Click here to submit your review: [Review Link]";
-//        sendEmail(toEmail, subject, body);
-//    }
-//
-//    /**
-//     * बुकिंग कॅन्सलेशन ईमेल (Booking Cancellation Email)
-//     */
-//    @Override
-//    public void sendBookingCancellation(String toEmail, String busDetails) {
-//        String subject = "❌ Booking Cancelled";
-//        String body = "⚠️ Your booking has been cancelled.\n\n" +
-//                      "🚌 Bus Details: " + busDetails + "\n\n" +
-//                      "💰 Any applicable refund will be processed shortly.\n" +
-//                      "We hope to see you again soon!";
-//        sendEmail(toEmail, subject, body);
-//    }
-//}
-
-
 package com.sunbeam.booking.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
@@ -129,8 +20,11 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Value("${spring.mail.username}")
+    private String fromEmail;
+
     /**
-     * ✅ Sends an email with UTF-8 encoding & proper HTML formatting.
+     * ✅ General method to send email.
      */
     @Override
     public void sendEmail(String to, String subject, String body) {
@@ -140,15 +34,17 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(body, true);
-            helper.setFrom("your-email@gmail.com");
+            helper.setFrom(fromEmail);
 
             log.info("📧 Sending email to: {}", to);
             log.info("📧 Subject: {}", subject);
 
             mailSender.send(message);
             log.info("✅ Email sent successfully!");
+
         } catch (MessagingException | MailException e) {
-            log.error("❌ Email failed: {}", e.getMessage());
+            log.error("❌ Email failed to send: {}", e.getMessage());
+            throw new RuntimeException("Failed to send email", e);
         }
     }
 
@@ -160,10 +56,10 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
         String subject = "🔐 Your OTP Code";
         String body = """
             <html>
-            <body>
-                <p>Hello,</p>
+            <body style="font-family:Arial,sans-serif;">
+                <h2>Hello,</h2>
                 <p>Your OTP for verification is: <strong>%s</strong></p>
-                <p>Please do not share this with anyone.</p>
+                <p style="color:red;"><b>Do not share this OTP with anyone.</b></p>
                 <p>Thank you!</p>
             </body>
             </html>
@@ -172,7 +68,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
     }
 
     /**
-     * ✅ Sends Booking Confirmation Email.
+     * ✅ Booking Confirmation Email.
      */
     @Override
     public void sendBookingConfirmation(String toEmail, String busDetails, String bookingId) {
@@ -180,7 +76,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
         String body = """
             <html>
             <body>
-                <h3>🎉 Your booking is confirmed! 🎉</h3>
+                <h2>🎉 Your booking is confirmed! 🎉</h2>
                 <p>🚌 <strong>Bus Details:</strong> %s</p>
                 <p>📌 <strong>Booking ID:</strong> %s</p>
                 <p>✅ Please arrive 30 minutes before departure.</p>
@@ -192,7 +88,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
     }
 
     /**
-     * ✅ Sends Bus Arrival Reminder Email.
+     * ✅ Bus Arrival Reminder Email.
      */
     @Override
     public void sendArrivalReminder(String toEmail, String busDetails) {
@@ -200,7 +96,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
         String body = """
             <html>
             <body>
-                <h3>🔔 Reminder! Your bus is arriving soon.</h3>
+                <h2>🔔 Reminder! Your bus is arriving soon.</h2>
                 <p>🚌 <strong>Bus Details:</strong> %s</p>
                 <p>⏳ Please be ready at your stop.</p>
                 <p>Safe travels! 🚍</p>
@@ -211,7 +107,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
     }
 
     /**
-     * ✅ Sends Review Request Email.
+     * ✅ Review Request Email.
      */
     @Override
     public void sendReviewRequest(String toEmail, String busDetails) {
@@ -219,7 +115,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
         String body = """
             <html>
             <body>
-                <h3>🙏 We hope you had a great journey! 🚍</h3>
+                <h2>🙏 We hope you had a great journey! 🚍</h2>
                 <p>🚌 <strong>Bus Details:</strong> %s</p>
                 <p>📝 Please take a moment to rate and review your experience.</p>
                 <p>🔗 <a href="#">Click here to submit your review</a></p>
@@ -230,7 +126,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
     }
 
     /**
-     * ✅ Sends Booking Cancellation Email.
+     * ✅ Booking Cancellation Email.
      */
     @Override
     public void sendBookingCancellation(String toEmail, String busDetails) {
@@ -238,7 +134,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
         String body = """
             <html>
             <body>
-                <h3>⚠️ Your booking has been cancelled.</h3>
+                <h2>⚠️ Your booking has been cancelled.</h2>
                 <p>🚌 <strong>Bus Details:</strong> %s</p>
                 <p>💰 Any applicable refund will be processed shortly.</p>
                 <p>We hope to see you again soon!</p>

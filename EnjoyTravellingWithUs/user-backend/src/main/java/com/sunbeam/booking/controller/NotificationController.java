@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sunbeam.booking.dto.ApiResponse;
-import com.sunbeam.booking.entity.Notification;
+import com.sunbeam.booking.dto.NotificationDTO;
 import com.sunbeam.booking.service.NotificationService;
 
 @RestController
@@ -30,7 +30,7 @@ public class NotificationController {
      * ✅ Retrieves all notifications for a user
      */
     @GetMapping("/{userId}")
-    public ResponseEntity<List<Notification>> getUserNotifications(@PathVariable Long userId) {
+    public ResponseEntity<List<NotificationDTO>> getUserNotifications(@PathVariable Long userId) {
         return ResponseEntity.ok(notificationService.getUserNotifications(userId));
     }
 

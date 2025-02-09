@@ -1,6 +1,8 @@
 package com.sunbeam.booking.dto;
 
+
 import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class NotificationDTO {
     private Long id;
     private String message;
-    private boolean readStatus;
+    private boolean isRead;
     private LocalDateTime createdOn;
 }

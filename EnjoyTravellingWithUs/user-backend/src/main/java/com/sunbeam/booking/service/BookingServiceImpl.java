@@ -1,6 +1,5 @@
 package com.sunbeam.booking.service;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
@@ -37,35 +36,35 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     private UserRepository userRepository;
 
-    @Override
-    @Transactional
-    public BookingDTO createBooking(BookingDTO bookingDTO) {
-        lock.lock();
-        try {
-            User user = userRepository.findById(bookingDTO.getUserId())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+	@Override
+	@Transactional
+	public BookingDTO createBooking(BookingDTO bookingDTO) {
+    lock.lock();
+    try {
+        User user = userRepository.findById(bookingDTO.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-            Bus bus = busRepository.findById(bookingDTO.getBusId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Bus not found"));
+        Bus bus = busRepository.findById(bookingDTO.getBusId())
+                .orElseThrow(() -> new ResourceNotFoundException("Bus not found"));
 
-            Booking booking = new Booking();
-            booking.setUser(user);
-            booking.setBus(bus);
-            booking.setBookingDate(LocalDateTime.now());
-            booking.setSeatNumber(bookingDTO.getSeatNumber()); // ✅ Corrected seat reference
-            booking.setPrice(bookingDTO.getPrice());
-            booking.setStatus("CONFIRMED");
+        Booking booking = new Booking();
+        booking.setUser(user);
+        booking.setBus(bus);
+        booking.setBookingDate(bookingDTO.getBookingDate()); // ✅ Now uses parsed LocalDateTime
+        booking.setSeatNumber(bookingDTO.getSeatNumber());
+        booking.setPrice(bookingDTO.getPrice());
+        booking.setStatus("CONFIRMED");
 
-            bookingRepository.save(booking);
+        bookingRepository.save(booking);
 
-            log.info("✅ Booking created: User {} | Bus {} | Seat {}", 
-                    bookingDTO.getUserId(), bookingDTO.getBusId(), bookingDTO.getSeatNumber());
+        log.info("✅ Booking created: User {} | Bus {} | Seat {}", 
+                 bookingDTO.getUserId(), bookingDTO.getBusId(), bookingDTO.getSeatNumber());
 
-            return convertToBookingDTO(booking);
-        } finally {
-            lock.unlock();
-        }
+        return bookingDTO;
+    } finally {
+        lock.unlock();
     }
+}
 
 
     @Override
@@ -107,8 +106,10 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
 
-        booking.setBookingDate(LocalDateTime.parse(bookingDTO.getBookingDate(), DateTimeFormatter.ISO_DATE_TIME)); // ✅ Correct parsing
+        //booking.setBookingDate(LocalDateTime.parse(bookingDTO.getBookingDate(), DateTimeFormatter.ISO_DATE_TIME)); // ✅ Correct parsing
 
+        booking.setBookingDate(bookingDTO.getBookingDate());
+        
         booking.setSeatNumber(bookingDTO.getSeatNumber());
         booking.setPrice(bookingDTO.getPrice());
         booking.setStatus(bookingDTO.getStatus()); // ✅ Ensure status updates correctly

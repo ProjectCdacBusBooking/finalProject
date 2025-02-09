@@ -33,11 +33,13 @@ public class OTPServiceImpl implements OTPService {
     public String generateOTP(String email) {
         String otp = generateRandomOTP();
         otpStorage.put(email, otp);
+        
         log.info("🔢 OTP generated for {}: {}", email, otp);
 
+        // ✅ Send OTP via email
         emailNotificationService.sendOTP(email, otp);
 
-        // ✅ Schedule OTP removal after expiration time
+        // ✅ Expire OTP after 5 minutes
         scheduler.schedule(() -> {
             otpStorage.remove(email);
             log.info("⏳ OTP expired for {}", email);
@@ -45,6 +47,7 @@ public class OTPServiceImpl implements OTPService {
 
         return otp;
     }
+
 
     /**
      * ✅ Validates OTP and removes it after successful verification.
