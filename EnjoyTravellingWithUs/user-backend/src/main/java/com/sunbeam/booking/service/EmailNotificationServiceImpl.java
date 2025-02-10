@@ -49,6 +49,28 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
     }
 
     /**
+     * ✅ Sends a **beautiful** welcome email after user registration.
+     */
+    @Override
+    public void sendWelcomeEmail(String toEmail, String userName) {
+        String subject = "🎉 Welcome to Enjoy Travelling With Us!";
+        String body = """
+            <html>
+            <body style="font-family: Arial, sans-serif; text-align: center;">
+                <h2 style="color: #4CAF50;">🚍 Welcome, %s! 🎉</h2>
+                <p>We are excited to have you onboard. 🚀</p>
+                <p>With <strong>Enjoy Travelling With Us</strong>, you can book your bus tickets with ease.</p>
+                <p>✅ Secure & Easy Bookings<br>✅ Real-time Seat Availability<br>✅ Hassle-free Travel</p>
+                <p>Start exploring now and enjoy seamless travel experiences!</p>
+                <p>📌 <strong>Visit our website to get started.</strong></p>
+                <p>Best regards,<br><strong>Enjoy Travelling With Us Team</strong></p>
+            </body>
+            </html>
+        """.formatted(userName);
+        sendEmail(toEmail, subject, body);
+    }
+
+    /**
      * ✅ Sends OTP Email.
      */
     @Override
@@ -64,6 +86,24 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
             </body>
             </html>
         """.formatted(otp);
+        sendEmail(toEmail, subject, body);
+    }
+
+    /**
+     * ✅ Sends update confirmation email after a user updates their details.
+     */
+    @Override
+    public void sendUpdateConfirmation(String toEmail, String updateType) {
+        String subject = "✅ Account Update Successful";
+        String body = """
+            <html>
+            <body style="font-family: Arial, sans-serif; text-align: center;">
+                <h3>🔄 Your %s has been updated successfully!</h3>
+                <p>If you did not request this change, please contact support immediately.</p>
+                <p>Best regards,<br><strong>Enjoy Travelling With Us Team</strong></p>
+            </body>
+            </html>
+        """.formatted(updateType);
         sendEmail(toEmail, subject, body);
     }
 
