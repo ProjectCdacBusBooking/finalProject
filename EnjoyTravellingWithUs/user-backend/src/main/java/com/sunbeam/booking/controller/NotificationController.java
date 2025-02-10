@@ -16,31 +16,30 @@ import com.sunbeam.booking.dto.NotificationDTO;
 import com.sunbeam.booking.service.NotificationService;
 
 @RestController
-@RequestMapping("/api/notifications")
-@CrossOrigin(origins = "http://localhost:3000") // ✅ Keeping React frontend compatibility
+@RequestMapping("/api/notifications") // Notification related APIs handle karnyasathi controller
+@CrossOrigin(origins = "http://localhost:3000") // Frontend access allow karnyasathi CORS enable karto
 public class NotificationController {
 
-    private final NotificationService notificationService;
+    private final NotificationService notificationService; // Notification service inject karto
 
     public NotificationController(NotificationService notificationService) {
         this.notificationService = notificationService;
     }
 
     /**
-     * ✅ Retrieves all notifications for a user
+     * ✅ Ekha user chya saglya notifications fetch karto
      */
     @GetMapping("/{userId}")
     public ResponseEntity<List<NotificationDTO>> getUserNotifications(@PathVariable Long userId) {
-        return ResponseEntity.ok(notificationService.getUserNotifications(userId));
+        return ResponseEntity.ok(notificationService.getUserNotifications(userId)); // User ID nusar notifications return karto
     }
 
     /**
-     * ✅ Saves a new notification for a user
+     * ✅ Naveen notification save karto ekha user sathi
      */
     @PostMapping("/save")
     public ResponseEntity<ApiResponse> saveNotification(@RequestParam Long userId, @RequestParam String message) {
-        notificationService.saveNotification(userId, message);
-        return ResponseEntity.ok(new ApiResponse("✅ Notification saved successfully!"));
+        notificationService.saveNotification(userId, message); // User ID ani message gheun notification save karto
+        return ResponseEntity.ok(new ApiResponse("✅ Notification saved successfully!")); // Success response return karto
     }
-
 }
