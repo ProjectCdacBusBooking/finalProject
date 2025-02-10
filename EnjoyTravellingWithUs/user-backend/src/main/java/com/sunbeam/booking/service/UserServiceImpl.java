@@ -26,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private OTPService otpService;
+    
+    @Autowired
+    private EmailNotificationService emailNotificationService;
 
     /**
      * ✅ Registers a new user.
@@ -44,9 +47,11 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDTO.getEmail());
         user.setContact(userDTO.getContact());
         user.setPassword(userDTO.getPassword()); // TODO: Hash password before storing
+        emailNotificationService.sendWelcomeEmail(user.getEmail(), user.getFirstName());
         userRepository.save(user);
 
         log.info("✅ User registered successfully: {}", userDTO.getEmail());
+
         return new ApiResponse("User registered successfully");
     }
 
@@ -89,6 +94,8 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setContact(userDTO.getContact());
+        emailNotificationService.sendUpdateConfirmation(user.getEmail(), "Profile Update");
+
         userRepository.save(user);
 
         log.info("✅ User profile updated: {}", userId);
