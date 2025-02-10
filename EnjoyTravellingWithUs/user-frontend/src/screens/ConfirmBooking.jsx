@@ -16,11 +16,11 @@ function ConfirmBooking() {
     const fetchBookingDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/bookings/${bookingId}`
+          `http://localhost:8080/api/bookings/${bookingId}`
         );
         setBooking(response.data);
         const walletRes = await axios.get(
-          `http://localhost:8080/wallet/${response.data.userId}`
+          `http://localhost:8080/api/wallet/${response.data.userId}`
         );
         setWalletBalance(walletRes.data.balance);
       } catch (err) {
@@ -35,10 +35,13 @@ function ConfirmBooking() {
 
   const handlePayment = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/wallet/pay", {
-        bookingId,
-        amount: booking.totalFare,
-      });
+      const response = await axios.post(
+        "http://localhost:8080/api/wallet/pay",
+        {
+          bookingId,
+          amount: booking.totalFare,
+        }
+      );
 
       if (response.data.success) {
         navigate(`/booking-success/${bookingId}`); // use navigate instead of history.push

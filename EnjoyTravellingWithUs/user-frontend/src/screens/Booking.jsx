@@ -15,7 +15,7 @@ function Booking() {
     const fetchSeats = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/bus/${busId}/seats`
+          `http://localhost:8080/api/bus/${busId}/seats`
         );
         setSeats(response.data);
       } catch (err) {
@@ -39,7 +39,7 @@ function Booking() {
   const handleConfirmBooking = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/bookings/select-seats",
+        "http://localhost:8080/api/bookings/select-seats",
         {
           busId,
           seats: selectedSeats,

@@ -23,7 +23,7 @@ function BookingHistoryPage() {
         }
 
         const response = await axios.get(
-          `http://localhost:8080/bookings/history/${userId}`
+          `http://localhost:8080/api/bookings/history/${userId}`
         );
         setBookings(response.data);
       } catch (err) {

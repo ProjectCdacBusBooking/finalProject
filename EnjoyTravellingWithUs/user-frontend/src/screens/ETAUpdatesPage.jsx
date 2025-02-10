@@ -18,7 +18,7 @@ function ETAUpdatesPage({ match }) {
     const fetchETA = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/buses/${busId}/eta`
+          `http://localhost:8080/api/buses/${busId}/eta`
         );
         setEta(response.data.eta);
       } catch (err) {

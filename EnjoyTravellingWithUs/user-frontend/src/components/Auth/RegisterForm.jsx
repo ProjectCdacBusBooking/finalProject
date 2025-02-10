@@ -1,75 +1,86 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../services/authService";
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
-    fullName: "", // ✅ Correct field name (was 'name')
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
-    phone: "",
+    contact: "",
   });
-
-  const [error, setError] = useState(""); // Error state
-  const navigate = useNavigate(); // ✅ Corrected variable name (was 'history')
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const navigate = useNavigate(); // React Router Navigation
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Reset errors
+    setError("");
+    setSuccess("");
 
     try {
-      await registerUser(formData);
-      navigate("/login"); // ✅ Corrected variable name (was 'history.push')
-    } catch (error) {
-      console.error("Registration Error:", error);
-      setError("Registration failed. Please check your details.");
+      const result = await registerUser(formData);
+      console.log("📌 Registration Success:", result);
+      setSuccess(result.msg);
+      setTimeout(() => {
+        navigate("/login"); // 🔹 2 सेकंदात Login Page वर Redirect
+      }, 2000);
+    } catch (err) {
+      setError(err || "Failed to register. Please try again.");
     }
   };
 
   return (
     <div>
       <h2>Register</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}{" "}
-      {/* ✅ Display error */}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && (
+        <p style={{ color: "green" }}>{success} Redirecting to Login...</p>
+      )}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          name="fullName" // ✅ Changed from 'name' to 'fullName'
-          placeholder="Full Name"
-          value={formData.fullName}
+          name="firstName"
+          placeholder="First Name"
           onChange={handleChange}
+          value={formData.firstName}
+          required
+        />
+        <input
+          type="text"
+          name="lastName"
+          placeholder="Last Name"
+          onChange={handleChange}
+          value={formData.lastName}
           required
         />
         <input
           type="email"
           name="email"
           placeholder="Email"
-          value={formData.email}
           onChange={handleChange}
+          value={formData.email}
           required
         />
         <input
           type="password"
           name="password"
           placeholder="Password"
-          value={formData.password}
           onChange={handleChange}
+          value={formData.password}
           required
-          minLength={6} // ✅ Ensure at least 6 characters
         />
         <input
-          type="tel"
-          name="phone"
-          placeholder="Phone" // ✅ Corrected placeholder (was 'phone')
-          value={formData.phone}
+          type="text"
+          name="contact"
+          placeholder="Contact"
           onChange={handleChange}
+          value={formData.contact}
           required
         />
         <button type="submit">Register</button>

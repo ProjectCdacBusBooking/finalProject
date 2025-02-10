@@ -1,5 +1,3 @@
-// 📂 src/screens/HomePage.jsx
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -10,7 +8,7 @@ function HomePage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSearch = async (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
     if (!source || !destination || !date) {
       setError("Please fill all fields.");

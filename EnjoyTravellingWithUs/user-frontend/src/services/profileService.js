@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/user";
+const API_URL = "http://localhost:8080/api/users";
 
 export const getUserProfile = async () => {
   try {
@@ -13,7 +13,7 @@ export const getUserProfile = async () => {
       throw new Error("User not authenticated");
     }
 
-    const response = await axios.get(`${API_URL}/profile/${userId}`, {
+    const response = await axios.get(`${API_URL}${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 

@@ -1,42 +1,27 @@
 import axios from "axios";
 
-const API_URL = "/api/notifications";
+const API_BASE_URL = "http://localhost:8080/api/notifications";
 
-// Function to subscribe to notifications
-const subscribeToNotifications = async (userId) => {
+// Get Notifications
+export const getUserNotifications = async (userId) => {
   try {
-    const response = await axios.post(`${API_URL}/subscribe/${userId}`);
+    const response = await axios.get(`${API_BASE_URL}/${userId}`);
     return response.data;
   } catch (error) {
-    console.error("Error subscribing to notifications", error);
+    console.error(
+      "Notification Fetch Error:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
 
-// Function to get notifications
-const getNotifications = async (userId) => {
+// Mark Notification as Read
+export const markNotificationAsRead = async (notificationId) => {
   try {
-    const response = await axios.get(`${API_URL}/${userId}`);
-    return response.data;
+    await axios.put(`${API_BASE_URL}/read/${notificationId}`);
   } catch (error) {
-    console.error("Error fetching notifications", error);
+    console.error("Mark as Read Error:", error.response?.data || error.message);
     throw error;
   }
-};
-
-// Function to mark notifications as read
-const markNotificationsAsRead = async (notificationId) => {
-  try {
-    const response = await axios.put(`${API_URL}/read/${notificationId}`);
-    return response.data;
-  } catch (error) {
-    console.error("Error marking notifications as read", error);
-    throw error;
-  }
-};
-
-export default {
-  subscribeToNotifications,
-  getNotifications,
-  markNotificationsAsRead,
 };
