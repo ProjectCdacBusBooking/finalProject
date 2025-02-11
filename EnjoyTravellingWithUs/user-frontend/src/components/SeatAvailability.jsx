@@ -1,46 +1,46 @@
-import React, { useState, useEffect } from "react";
+// src/components/SeatAvailability.jsx
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const SeatAvailability = ({ busId, selectedDate, onSeatsFetched }) => {
-  const [seatData, setSeatData] = useState(null);
+  const [seats, setSeats] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    // Fetch available seats from API
-    const fetchSeatData = async () => {
+    const fetchSeats = async () => {
       try {
-        const response = await axios.get(
-          `/api/seat-availability/${busId}/${selectedDate}`
+        console.log(
+          `📌 Fetching seats for Bus ID: ${busId} on ${selectedDate}`
         );
-        setSeatData(response.data);
-        onSeatsFetched(response.data.availableSeats); // Pass data to parent component
-      } catch (error) {
-        console.error("Error fetching seat availability", error);
+        const response = await axios.get(
+          `http://localhost:8080/api/buses/${busId}/seats?date=${selectedDate}`
+        );
+        setSeats(response.data);
+        onSeatsFetched(response.data);
+      } catch (err) {
+        console.error("❌ Error fetching seats:", err);
+        setError("Error loading seats. Please try again.");
       }
     };
 
-    fetchSeatData();
+    fetchSeats();
   }, [busId, selectedDate, onSeatsFetched]);
 
   return (
-    <div className="seat-availability">
-      {seatData ? (
-        <div>
-          <h3>Seats Available</h3>
-          <p>Total Seats: {seatData.totalSeats}</p>
-          <p>Available Seats: {seatData.availableSeats.length}</p>
-
-          {/* Display available seats */}
-          <div className="seats">
-            {seatData.availableSeats.map((seat, index) => (
-              <div key={index} className="seat available">
-                {seat}
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <p>Loading seat availability...</p>
-      )}
+    <div className="mt-4">
+      <h4>Available Seats</h4>
+      {error && <div className="alert alert-danger">{error}</div>}
+      <ul className="list-group">
+        {seats.length > 0 ? (
+          seats.map((seat) => (
+            <li key={seat.id} className="list-group-item">
+              Seat {seat.number} - {seat.booked ? "Booked" : "Available"}
+            </li>
+          ))
+        ) : (
+          <li className="list-group-item">No seats available.</li>
+        )}
+      </ul>
     </div>
   );
 };

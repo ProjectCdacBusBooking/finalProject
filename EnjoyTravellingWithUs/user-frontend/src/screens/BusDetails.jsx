@@ -15,7 +15,7 @@ function BusDetails() {
     const fetchBusDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/bus/${busId}`
+          `http://localhost:8080/api/buses/${busId}`
         );
         setBus(response.data);
       } catch (err) {

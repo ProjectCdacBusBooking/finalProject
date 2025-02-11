@@ -60,6 +60,10 @@ public class Bus extends BaseEntity {
     // ✅ A Bus can have multiple bookings
     @OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Booking> bookings;
+    
+    @OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Seat> seats;
+
 
     
 }

@@ -1,63 +1,101 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-const SeatSelection = ({ busId, selectedDate, availableSeats }) => {
+const SeatSelection = ({ busId, onSeatsSelected }) => {
+  const [seats, setSeats] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const [bookingMessage, setBookingMessage] = useState("");
+  const [error, setError] = useState("");
 
-  // Handle seat selection
-  const handleSeatSelection = (seatNumber) => {
-    setSelectedSeats((prevSelectedSeats) => {
-      if (prevSelectedSeats.includes(seatNumber)) {
-        return prevSelectedSeats.filter((seat) => seat !== seatNumber);
-      } else {
-        return [...prevSelectedSeats, seatNumber];
+  useEffect(() => {
+    const fetchSeats = async () => {
+      try {
+        console.log(`📌 Fetching seats for Bus ID: ${busId}`);
+        const response = await axios.get(
+          `http://localhost:8080/api/buses/${busId}/seats`
+        );
+        setSeats(response.data);
+      } catch (err) {
+        console.error("❌ Error fetching seats:", err);
+        setError("Error loading seats. Please try again.");
       }
-    });
+    };
+
+    fetchSeats();
+  }, [busId]);
+
+  const handleSeatClick = (seatNumber) => {
+    let updatedSeats;
+    if (selectedSeats.includes(seatNumber)) {
+      updatedSeats = selectedSeats.filter((s) => s !== seatNumber);
+    } else {
+      updatedSeats = [...selectedSeats, seatNumber];
+    }
+    setSelectedSeats(updatedSeats);
+    onSeatsSelected(updatedSeats); // ✅ Ensure latest selection is sent
   };
 
-  // Handle booking confirmation
-  const confirmBooking = async () => {
-    try {
-      const bookingData = {
-        busId,
-        date: selectedDate,
-        seatNumbers: selectedSeats.join(","), // Convert array to comma-separated string
-      };
-
-      const response = await axios.post("/api/book-seat", bookingData);
-      setBookingMessage(response.data.message);
-    } catch (error) {
-      setBookingMessage("Error booking the seat. Please try again.");
+  const confirmSeats = () => {
+    if (selectedSeats.length === 0) {
+      alert("Please select at least one seat.");
+      return;
     }
+    alert(`Seats Selected: ${selectedSeats.join(", ")}`);
   };
 
   return (
-    <div className="seat-selection">
+    <div className="container text-center">
       <h3>Select Your Seats</h3>
-      <div className="seats">
-        {Array.isArray(availableSeats) ? (
-          availableSeats.map((seat, index) => (
-            <div
-              key={index}
-              className={`seat ${
-                selectedSeats.includes(seat) ? "selected" : "available"
-              }`}
-              onClick={() => handleSeatSelection(seat)}
+      {error && <div className="alert alert-danger">{error}</div>}
+
+      <div className="seat-layout">
+        {seats.length > 0 ? (
+          seats.map((seat) => (
+            <button
+              key={seat.number}
+              className={`seat btn ${
+                seat.booked ? "btn-danger" : "btn-light"
+              } ${selectedSeats.includes(seat.number) ? "btn-success" : ""}`}
+              onClick={() => handleSeatClick(seat.number)}
+              disabled={seat.booked}
             >
-              {seat}
-            </div>
+              {seat.number}
+            </button>
           ))
         ) : (
-          <p>Loading seats...</p>
+          <p>No seats available.</p>
         )}
       </div>
 
-      <button className="confirm-booking" onClick={confirmBooking}>
-        Confirm Booking
+      <button className="btn btn-primary mt-3" onClick={confirmSeats}>
+        Confirm Selection
       </button>
 
-      {bookingMessage && <p>{bookingMessage}</p>}
+      <style>
+        {`
+          .seat-layout {
+            display: grid;
+            grid-template-columns: repeat(4, 50px);
+            gap: 10px;
+            justify-content: center;
+          }
+          .seat {
+            width: 50px;
+            height: 50px;
+            font-size: 14px;
+            text-align: center;
+            line-height: 50px;
+            border-radius: 5px;
+          }
+          .btn-danger {
+            background-color: red;
+            cursor: not-allowed;
+          }
+          .btn-success {
+            background-color: green;
+          }
+        `}
+      </style>
     </div>
   );
 };

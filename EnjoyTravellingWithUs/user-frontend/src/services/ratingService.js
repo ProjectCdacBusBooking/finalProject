@@ -5,7 +5,7 @@ const API_BASE_URL = "http://localhost:8080/api/reviews";
 // Add Review
 export const addReview = async (reviewData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/add`, reviewData);
+    const response = await axios.post(`${API_BASE_URL}/create`, reviewData);
     return response.data;
   } catch (error) {
     console.error("Add Review Error:", error.response?.data || error.message);
@@ -30,7 +30,7 @@ export const getReviewsByBus = async (busId) => {
 // Get Average Rating
 export const getAverageRating = async (busId) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/average/${busId}`);
+    const response = await axios.get(`${API_BASE_URL}/bus/${busId}/average`);
     return response.data;
   } catch (error) {
     console.error(

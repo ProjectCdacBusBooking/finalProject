@@ -1,51 +1,48 @@
 import React, { useEffect, useState } from "react";
-import {
-  getUserNotifications,
-  markNotificationAsRead,
-} from "../services/notificationService";
+import axios from "axios";
 
 const NotificationPage = () => {
-  const userId = localStorage.getItem("userId");
   const [notifications, setNotifications] = useState([]);
   const [error, setError] = useState("");
+  const user = JSON.parse(localStorage.getItem("user")); // ✅ Get user data from local storage
+  const userId = user?.id; // ✅ Extract user ID
 
   useEffect(() => {
-    fetchNotifications();
-  }, []);
-
-  const fetchNotifications = async () => {
-    try {
-      const data = await getUserNotifications(userId);
-      setNotifications(data);
-    } catch (error) {
-      setError("Error fetching notifications.");
+    if (!userId) {
+      setError("User not logged in!");
+      return;
     }
-  };
 
-  const handleMarkAsRead = async (notificationId) => {
-    await markNotificationAsRead(notificationId);
-    fetchNotifications(); // Refresh list after marking read
-  };
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/notifications/user/${userId}`
+        );
+        setNotifications(response.data);
+      } catch (err) {
+        console.error("❌ Notification Fetch Error:", err);
+        setError("Error loading notifications.");
+      }
+    };
+
+    fetchNotifications();
+  }, [userId]);
 
   return (
-    <div className="container mt-4">
-      <div className="card shadow p-4">
-        <h2 className="text-center">Notifications</h2>
-        {error && <div className="alert alert-danger">{error}</div>}
-        <ul>
-          {notifications.map((notif) => (
-            <li key={notif.id}>
+    <div className="container">
+      <h3 className="mt-3">🔔 Notifications</h3>
+      {error && <div className="alert alert-danger">{error}</div>}
+      <ul className="list-group mt-3">
+        {notifications.length > 0 ? (
+          notifications.map((notif, index) => (
+            <li key={index} className="list-group-item">
               {notif.message}
-              <button
-                className="btn btn-sm btn-primary ml-2"
-                onClick={() => handleMarkAsRead(notif.id)}
-              >
-                Mark as Read
-              </button>
             </li>
-          ))}
-        </ul>
-      </div>
+          ))
+        ) : (
+          <li className="list-group-item">No notifications available.</li>
+        )}
+      </ul>
     </div>
   );
 };

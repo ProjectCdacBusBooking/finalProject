@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Navbar() {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
     if (token && userData) {
-      setUser(JSON.parse(userData)); // Convert string to object
+      setUser(JSON.parse(userData));
     }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    window.location.href = "/login"; // Redirect to login
+    navigate("/login"); // ✅ Fix: Proper logout redirection
   };
 
   return (
@@ -24,14 +25,6 @@ function Navbar() {
         <Link className="navbar-brand" to="/">
           <i className="fas fa-bus"></i> Enjoy Travelling With Us!
         </Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
@@ -54,7 +47,7 @@ function Navbar() {
               <>
                 <li className="nav-item">
                   <span className="nav-link text-warning">
-                    Welcome, {user.firstName} {user.lastName}!
+                    Welcome, {user.firstName}!
                   </span>
                 </li>
                 <li className="nav-item">

@@ -4,7 +4,7 @@ import axios from "axios";
 
 function SearchResults() {
   const location = useLocation();
-  const navigate = useNavigate(); // Use navigate instead of useHistory
+  const navigate = useNavigate();
   const [buses, setBuses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -16,15 +16,10 @@ function SearchResults() {
       const destination = queryParams.get("destination");
       const date = queryParams.get("date");
 
-      if (!source || !destination || !date) {
-        setError("Invalid search parameters.");
-        setLoading(false);
-        return;
-      }
-
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/buses/search?source=${source}&destination=${destination}&date=${date}`
+          `http://localhost:8080/api/buses/search`,
+          { params: { source, destination, date } }
         );
         setBuses(response.data);
       } catch (err) {
@@ -37,18 +32,12 @@ function SearchResults() {
     fetchBuses();
   }, [location.search]);
 
-  const handleViewDetails = (busId) => {
-    navigate(`/bus/${busId}`); // Use navigate instead of history.push
-  };
-
   return (
     <div className="container mt-4">
       <h2 className="text-center text-primary">Available Buses</h2>
       {loading ? (
         <div className="text-center mt-4">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
+          <div className="spinner-border text-primary"></div>
         </div>
       ) : error ? (
         <div className="alert alert-danger">{error}</div>
@@ -72,7 +61,7 @@ function SearchResults() {
                   </p>
                   <button
                     className="btn btn-primary"
-                    onClick={() => handleViewDetails(bus.id)}
+                    onClick={() => navigate(`/bus/${bus.id}`)}
                   >
                     View Details
                   </button>

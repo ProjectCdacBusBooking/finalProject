@@ -1,0 +1,68 @@
+/* 📂 src/Styles/Booking.css */
+
+.booking-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .bus-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .bus-card {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .bus-card:hover {
+    background: #f0f0f0;
+  }
+  
+  .seat-selection {
+    margin-top: 20px;
+  }
+  
+  .seats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  
+  .seat {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .seat.selected {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .confirm-button {
+    background: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    cursor: pointer;
+  }
+  
+  .confirm-button:hover {
+    background: #0056b3;
+  }
+  

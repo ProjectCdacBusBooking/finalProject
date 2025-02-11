@@ -1,8 +1,10 @@
 package com.sunbeam.booking.service;
 
 import java.util.List;
+
 import com.sunbeam.booking.dto.BookingDTO;
 import com.sunbeam.booking.dto.BusDTO;
+import com.sunbeam.booking.dto.SeatDTO;
 
 public interface BusService {
 
@@ -42,4 +44,9 @@ public interface BusService {
      * ✅ Retrieves all bookings for all buses.
      */
     List<BookingDTO> findBookingsForAllBuses();
+    
+    List<BusDTO> searchBuses(String source, String destination, String date);
+    
+    List<SeatDTO> getSeatsByBusId(Long busId);
+    
 }
