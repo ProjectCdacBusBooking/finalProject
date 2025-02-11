@@ -18,7 +18,7 @@ function LiveLocationPage({ match }) {
     const fetchBusLocation = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/buses/${busId}/live-location`
+          `http://localhost:8080/api/buses/${busId}/live-location`
         );
         setBusLocation(response.data.location);
       } catch (err) {

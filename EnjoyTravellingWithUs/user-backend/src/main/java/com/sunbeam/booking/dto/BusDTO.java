@@ -2,6 +2,9 @@ package com.sunbeam.booking.dto;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import com.sunbeam.booking.entity.Bus;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,6 +44,23 @@ public class BusDTO {
         this.availableSeats = availableSeats;
         this.fare = fare;
     }
+    
+    public BusDTO(Bus bus) {
+        this.id = bus.getId();
+        this.name = bus.getName();
+        this.source = bus.getSource();
+        this.destination = bus.getDestination();
+        this.departureTime = bus.getDepartureTime();
+        this.arrivalTime = bus.getArrivalTime();
+        this.busNumber = bus.getBusNumber();
+        this.route = bus.getRoute();
+        this.capacity = bus.getCapacity();
+        this.totalSeats = bus.getTotalSeats();
+        this.availableSeats = bus.getAvailableSeats();
+        this.fare = bus.getFare();
+    }
+
+
 
     private LocalDateTime parseDateTime(String dateTimeStr) {
         if (dateTimeStr.length() == 16) { // If missing seconds, append ":00"

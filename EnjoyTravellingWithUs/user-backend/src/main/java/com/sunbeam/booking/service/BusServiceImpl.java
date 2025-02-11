@@ -1,41 +1,31 @@
 package com.sunbeam.booking.service;  
 // 📌 He package declaration ahe, jo service layer la indicate karto  
 
-import java.util.List;  
+import java.util.List;
 // 📌 List import keli jo multiple objects handle karayla lagel  
-
 import java.util.stream.Collectors;  
 // 📌 Stream API cha use karto je collection transform karayla madat karto  
 
-import org.springframework.beans.factory.annotation.Autowired;  
+import org.springframework.beans.factory.annotation.Autowired;
 // 📌 Dependency Injection sathi use kela jato  
-
-import org.springframework.stereotype.Service;  
+import org.springframework.stereotype.Service;
 // 📌 Service layer chi identification honya sathi  
-
 import org.springframework.transaction.annotation.Transactional;  
 // 📌 Database madhye multiple operations ekach transaction madhe handle karayla  
 
-import com.sunbeam.booking.dto.BookingDTO;  
+import com.sunbeam.booking.dto.BookingDTO;
 // 📌 Booking chi DTO class import keli  
-
-import com.sunbeam.booking.dto.BusDTO;  
+import com.sunbeam.booking.dto.BusDTO;
+import com.sunbeam.booking.dto.SeatDTO;
 // 📌 Bus chi DTO class import keli  
-
-import com.sunbeam.booking.entity.Bus;  
+import com.sunbeam.booking.entity.Bus;
 // 📌 Bus entity import keli jo database madhye store hoto  
-
-import com.sunbeam.booking.exceptions.ResourceNotFoundException;  
+import com.sunbeam.booking.exceptions.ResourceNotFoundException;
 // 📌 Custom exception import kela jar record na sapdla tar  
-
-import com.sunbeam.booking.repository.BookingRepository;  
+import com.sunbeam.booking.repository.BookingRepository;
 // 📌 BookingRepository madhun database operations karto  
-
 import com.sunbeam.booking.repository.BusRepository;  
 // 📌 BusRepository madhun database madhye bus related operations karto  
-
-import com.sunbeam.booking.util.DTOMapper;  
-// 📌 DTOMapper import karto jo entity la DTO madhe convert karto  
 
 import lombok.extern.slf4j.Slf4j;  
 // 📌 Logger use karnya sathi  
@@ -76,13 +66,44 @@ public class BusServiceImpl implements BusService {
      * ✅ Bus ID ne ek specific bus gheto.
      * - Jar bus nahi sapdli tar `ResourceNotFoundException` throw karto.
      */
-    @Override  
-    public BusDTO findBusDTOById(Long id) {  
-        return busRepository.findById(id)  
-            .map(DTOMapper::toBusDTO)  
-            .orElseThrow(() -> new ResourceNotFoundException("Bus not found with ID: " + id));  
-        // 📌 Bus fetch karto ani DTO madhe convert karto, nahi sapdli tar exception throw karto  
-    }  
+//    @Override  
+//    public BusDTO findBusDTOById(Long id) {  
+//        return busRepository.findById(id)  
+//            .map(DTOMapper::toBusDTO)  
+//            .orElseThrow(() -> new ResourceNotFoundException("Bus not found with ID: " + id));  
+//        // 📌 Bus fetch karto ani DTO madhe convert karto, nahi sapdli tar exception throw karto  
+//    }
+    
+    @Override
+    public BusDTO findBusDTOById(Long id) {
+        Bus bus = busRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Bus not found with ID: " + id));
+
+        return new BusDTO(bus); // Ensure BusDTO has a constructor that accepts a Bus object.
+    }
+
+    
+//    @Override
+//    public BusDTO findBusDTOById(Long id) {
+//        Bus bus = busRepository.findById(id)
+//            .orElseThrow(() -> new ResourceNotFoundException("Bus not found with ID: " + id));
+//
+//        return new BusDTO(
+//            bus.getId(),
+//            bus.getName(),
+//            bus.getSource(),
+//            bus.getDestination(),
+//            bus.getDepartureTime().toString(),
+//            bus.getArrivalTime().toString(),
+//            bus.getBusNumber(),
+//            bus.getRoute(),
+//            bus.getCapacity(),
+//            bus.getTotalSeats(),
+//            bus.getAvailableSeats(),
+//            bus.getFare()
+//        );
+//    }
+
 
     /**
      * ✅ Naveen bus save karaychi kiva existing bus update karaychi.
@@ -204,4 +225,26 @@ public class BusServiceImpl implements BusService {
         return bus;  
         // 📌 DTO madhun entity madhe convert karto  
     }  
+    
+    public List<BusDTO> searchBuses(String source, String destination, String date) {
+        List<Bus> buses = busRepository.findBySourceAndDestination(source, destination);
+        
+        // Optional: Filter buses by date if required
+        return buses.stream()
+            .map(bus -> new BusDTO(bus))
+            .collect(Collectors.toList());
+    }
+    
+    @Override
+    @Transactional
+    public List<SeatDTO> getSeatsByBusId(Long busId) {
+        Bus bus = busRepository.findById(busId)
+                .orElseThrow(() -> new ResourceNotFoundException("Bus not found with ID: " + busId));
+        
+        return bus.getSeats().stream()
+                .map(seat -> new SeatDTO(seat.getId(), seat.getNumber(), seat.isBooked()))
+                .collect(Collectors.toList());
+    }
+
+
 }  

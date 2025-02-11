@@ -1,12 +1,10 @@
-// 📂 src/screens/ConfirmBooking.jsx
-
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // useNavigate instead of useHistory
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function ConfirmBooking() {
   const { bookingId } = useParams();
-  const navigate = useNavigate(); // useNavigate hook
+  const navigate = useNavigate();
   const [booking, setBooking] = useState(null);
   const [walletBalance, setWalletBalance] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -16,15 +14,15 @@ function ConfirmBooking() {
     const fetchBookingDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/bookings/${bookingId}`
+          `http://localhost:8080/api/bookings/${bookingId}`
         );
         setBooking(response.data);
         const walletRes = await axios.get(
-          `http://localhost:8080/wallet/${response.data.userId}`
+          `http://localhost:8080/api/wallet/${response.data.userId}`
         );
         setWalletBalance(walletRes.data.balance);
       } catch (err) {
-        setError("Error fetching booking details. Please try again.");
+        setError("Error fetching booking details.");
       } finally {
         setLoading(false);
       }
@@ -35,18 +33,18 @@ function ConfirmBooking() {
 
   const handlePayment = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/wallet/pay", {
-        bookingId,
-        amount: booking.totalFare,
-      });
+      const response = await axios.post(
+        "http://localhost:8080/api/wallet/pay",
+        { bookingId, amount: booking.totalFare }
+      );
 
       if (response.data.success) {
-        navigate(`/booking-success/${bookingId}`); // use navigate instead of history.push
+        navigate(`/booking-success/${bookingId}`);
       } else {
-        setError("Insufficient balance. Please add money to wallet.");
+        setError("Insufficient balance. Add money to wallet.");
       }
     } catch (err) {
-      setError("Payment failed. Try again later.");
+      setError("Payment failed. Try again.");
     }
   };
 

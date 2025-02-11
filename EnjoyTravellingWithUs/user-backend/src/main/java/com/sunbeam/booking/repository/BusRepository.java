@@ -1,9 +1,13 @@
 package com.sunbeam.booking.repository;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
 import com.sunbeam.booking.entity.Bus;
 
 @Repository
@@ -18,4 +22,10 @@ public interface BusRepository extends JpaRepository<Bus, Long> {
      */
     @Query("SELECT b FROM Bus b WHERE LOWER(b.route) LIKE LOWER(CONCAT(:prefix, '%'))")
     List<Bus> findByRouteStartingWith(String prefix);
+    
+    List<Bus> findBySourceAndDestination(String source, String destination);
+    
+    @Query("SELECT b FROM Bus b LEFT JOIN FETCH b.seats WHERE b.id = :busId")
+    Optional<Bus> findByIdWithSeats(@Param("busId") Long busId);
+
 }

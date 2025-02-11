@@ -64,6 +64,7 @@ public class WalletController {
             // 📌 resource not found exception throw karto  
         }  
 
+//        return ResponseEntity.ok(walletService.getWalletByUserId(userId));
         return ResponseEntity.ok(walletDTO);  
         // 📌 response madhe wallet details return karto  
     }  

@@ -1,34 +1,55 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "../styles/Booking.css";
+import { FaBus, FaTicketAlt, FaCheckCircle } from "react-icons/fa";
 
-function Booking() {
-  const { busId } = useParams();
+const Booking = () => {
   const navigate = useNavigate();
-  const [seats, setSeats] = useState([]);
+  const [buses, setBuses] = useState([]);
+  const [selectedBus, setSelectedBus] = useState(null);
   const [selectedSeats, setSelectedSeats] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [booking, setBooking] = useState(null);
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState("wallet");
+
+  // Get user from localStorage (Check if logged in)
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
-    const fetchSeats = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/bus/${busId}/seats`
-        );
-        setSeats(response.data);
-      } catch (err) {
-        setError("Error fetching seat details. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (!user) {
+      navigate("/login"); // Redirect if not logged in
+    } else {
+      fetchBuses();
+      fetchWalletBalance();
+    }
+  }, [user]);
 
-    fetchSeats();
-  }, [busId]);
+  const fetchBuses = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/buses/all");
+      setBuses(response.data);
+    } catch (error) {
+      console.error("Error fetching buses:", error);
+    }
+  };
 
-  const handleSeatSelection = (seat) => {
+  const fetchWalletBalance = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/wallets/user/${user.id}`
+      );
+      setWalletBalance(response.data.balance);
+    } catch (error) {
+      console.error("Error fetching wallet balance:", error);
+    }
+  };
+
+  const handleBusSelect = (bus) => {
+    setSelectedBus(bus);
+    setSelectedSeats([]);
+  };
+
+  const handleSeatSelect = (seat) => {
     if (selectedSeats.includes(seat)) {
       setSelectedSeats(selectedSeats.filter((s) => s !== seat));
     } else {
@@ -36,94 +57,110 @@ function Booking() {
     }
   };
 
-  const handleConfirmBooking = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:8080/bookings/select-seats",
-        {
-          busId,
-          seats: selectedSeats,
-        }
+  const calculateTotalPrice = () => {
+    return selectedSeats.length * (selectedBus ? selectedBus.fare : 0);
+  };
+
+  const confirmBooking = async () => {
+    if (selectedSeats.length === 0) {
+      alert("Please select at least one seat.");
+      return;
+    }
+
+    const totalPrice = calculateTotalPrice();
+
+    if (paymentMethod === "wallet" && totalPrice > walletBalance) {
+      alert(
+        "Insufficient wallet balance! Please choose another payment method."
       );
-      if (response.data.success) {
-        fetchBookingDetails(response.data.bookingId);
-        // Optional: navigate(`/confirm-booking/${response.data.bookingId}`);
-      }
-    } catch (err) {
-      setError("Error processing booking. Please try again.");
+      return;
     }
-  };
 
-  const fetchBookingDetails = async (bookingId) => {
     try {
-      const response = await axios.get(`/bookings/${bookingId}`); // Replace with your API endpoint
-      setBooking(response.data);
-    } catch (error) {
-      console.error("Error fetching booking details:", error);
-      setError("Error fetching booking details.");
-    }
-  };
+      const bookingRequest = {
+        userId: user.id,
+        busId: selectedBus.id,
+        selectedSeats: selectedSeats.length,
+        seatNumbers: selectedSeats,
+        paymentMethod,
+      };
 
-  const handleCancelBooking = async () => {
-    if (!booking) return;
-    try {
-      await axios.put(`/bookings/cancel/${booking.id}`); // Replace with your API endpoint
-      alert("Booking cancelled successfully!");
-      setBooking(null);
-      setSelectedSeats([]); // Optional: Clear selected seats
+      await axios.post(
+        "http://localhost:8080/api/bookings/create",
+        bookingRequest
+      );
+      alert("✅ Booking Successful!");
+      navigate("/confirm-booking"); // Redirect to confirmation page
     } catch (error) {
-      alert("Error cancelling booking. Please try again.");
+      console.error("Error booking tickets:", error);
     }
   };
 
   return (
-    <div className="container mt-4">
-      {loading ? (
-        <div className="text-center mt-4">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
+    <div className="booking-container">
+      <h2>🚌 Book Your Bus Tickets</h2>
+
+      <section className="bus-selection">
+        <h3>Available Buses</h3>
+        <div className="bus-list">
+          {buses.map((bus) => (
+            <div
+              key={bus.id}
+              className="bus-card"
+              onClick={() => handleBusSelect(bus)}
+            >
+              <FaBus className="bus-icon" />
+              <h3>
+                {bus.source} ➝ {bus.destination}
+              </h3>
+              <p>🕒 Departure: {bus.departureTime}</p>
+              <p>💰 Fare: ₹{bus.fare} per seat</p>
+            </div>
+          ))}
         </div>
-      ) : error ? (
-        <div className="alert alert-danger">{error}</div>
-      ) : booking ? (
-        <div>
-          <h3>Booking Details</h3>
-          <p>Source: {booking.source}</p> {/* Replace with your booking data */}
-          <p>Destination: {booking.destination}</p>
-          <p>Travel Date: {booking.travelDate}</p>
-          <button onClick={handleCancelBooking} className="btn btn-danger">
-            Cancel Booking
-          </button>
-        </div>
-      ) : (
-        <div className="card shadow p-4">
-          <h2 className="text-center text-primary">Select Your Seats</h2>
-          <div className="seat-layout d-flex flex-wrap">
-            {seats.map((seat, index) => (
-              <button
-                key={index}
-                className={`seat ${
-                  selectedSeats.includes(seat) ? "selected" : ""
-                }`}
-                onClick={() => handleSeatSelection(seat)}
-                disabled={seat.booked}
-              >
-                {seat.number}
-              </button>
-            ))}
+      </section>
+
+      {selectedBus && (
+        <section className="seat-selection">
+          <h3>Select Your Seats</h3>
+          <div className="seats-grid">
+            {[...Array(selectedBus.totalSeats)].map((_, i) => {
+              const seatNum = `S${i + 1}`;
+              return (
+                <div
+                  key={seatNum}
+                  className={`seat ${
+                    selectedSeats.includes(seatNum) ? "selected" : ""
+                  }`}
+                  onClick={() => handleSeatSelect(seatNum)}
+                >
+                  {seatNum}
+                </div>
+              );
+            })}
           </div>
-          <button
-            className="btn btn-success w-100 mt-3"
-            onClick={handleConfirmBooking}
-            disabled={!selectedSeats.length}
+        </section>
+      )}
+
+      {selectedSeats.length > 0 && (
+        <section className="payment-section">
+          <h3>Payment Method</h3>
+          <p>Wallet Balance: ₹{walletBalance}</p>
+          <select
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
           >
-            Confirm Booking
+            <option value="wallet">Wallet</option>
+            <option value="credit-card">Credit Card</option>
+          </select>
+          <p>Total Price: ₹{calculateTotalPrice()}</p>
+          <button className="confirm-button" onClick={confirmBooking}>
+            <FaCheckCircle /> Confirm Booking
           </button>
-        </div>
+        </section>
       )}
     </div>
   );
-}
+};
 
 export default Booking;

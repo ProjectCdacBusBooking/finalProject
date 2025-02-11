@@ -16,7 +16,7 @@ function BookingCancellationPage() {
     const fetchBookingDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/bookings/${bookingId}`
+          `http://localhost:8080/api/bookings/${bookingId}`
         );
         setBooking(response.data);
       } catch (err) {
@@ -39,7 +39,7 @@ function BookingCancellationPage() {
       }
 
       const response = await axios.post(
-        `http://localhost:8080/bookings/cancel/${bookingId}`
+        `http://localhost:8080/api/bookings/cancel/${bookingId}`
       );
       setSuccess(
         "Booking cancelled successfully. A refund will be processed shortly."

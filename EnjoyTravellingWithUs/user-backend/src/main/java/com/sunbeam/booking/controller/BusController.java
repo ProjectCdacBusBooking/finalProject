@@ -1,14 +1,25 @@
 package com.sunbeam.booking.controller;
 
-import com.sunbeam.booking.dto.BusDTO;
-import com.sunbeam.booking.service.BusService;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.sunbeam.booking.dto.BusDTO;
+import com.sunbeam.booking.dto.SeatDTO;
+import com.sunbeam.booking.exceptions.ResourceNotFoundException;
+import com.sunbeam.booking.service.BusService;
 
 @RestController
 @RequestMapping("/api/buses")
@@ -36,10 +47,20 @@ public class BusController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BusDTO> getBusById(@PathVariable Long id) {
-        log.info("📌 Fetching bus with ID: {}", id); // Specific bus ID varun ghetnyasathi log entry karto
-        return ResponseEntity.ok(busService.findBusDTOById(id)); // Specific bus chi mahiti return karto
+    public ResponseEntity<?> getBusById(@PathVariable Long id) {
+        try {
+            log.info("📌 Fetching bus with ID: {}", id);
+            BusDTO busDTO = busService.findBusDTOById(id);
+            return ResponseEntity.ok(busDTO);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("🚫 Bus not found!");
+        } catch (Exception e) {
+            log.error("❌ Error fetching bus details:", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("⚠️ Internal Server Error");
+        }
     }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBus(@PathVariable Long id) {
@@ -47,4 +68,27 @@ public class BusController {
         busService.deleteById(id); // ID varun bus delete karto
         return ResponseEntity.noContent().build(); // 204 No Content return karto
     }
+    
+    @GetMapping("/search")
+    public ResponseEntity<List<BusDTO>> searchBuses(
+        @RequestParam String source,
+        @RequestParam String destination,
+        @RequestParam String date) {
+        
+        log.info("📌 Searching buses from {} to {} on {}", source, destination, date);
+        
+        List<BusDTO> buses = busService.searchBuses(source, destination, date);
+        
+        return ResponseEntity.ok(buses);
+    }
+
+    @GetMapping("/{busId}/seats")
+    public ResponseEntity<List<SeatDTO>> getSeatsByBusId(@PathVariable Long busId) {
+        log.info("📌 Fetching seats for Bus ID: {}", busId);
+        List<SeatDTO> seats = busService.getSeatsByBusId(busId);
+        return ResponseEntity.ok(seats);
+    }
+
+
+
 }
