@@ -1,12 +1,9 @@
 package com.sunbeam.booking.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.sunbeam.booking.dto.RatingReviewDTO;
-import com.sunbeam.booking.entity.RatingReview;
-import com.sunbeam.booking.repository.RatingReviewRepository;
+import java.util.List;
 
+<<<<<<< HEAD
 @Service
 public class RatingReviewService {
 
@@ -22,4 +19,11 @@ public class RatingReviewService {
 
         return ratingReviewRepository.save(ratingReview);
     }
+=======
+public interface RatingReviewService {
+    RatingReviewDTO addRatingReview(RatingReviewDTO ratingReviewDTO);
+    List<RatingReviewDTO> getReviewsByBus(Long busId);
+    List<RatingReviewDTO> getReviewsByUser(Long userId);
+    double getAverageRating(Long busId);
+>>>>>>> 4592f26860dd1612aabb10cfb194f28a38b54c75
 }

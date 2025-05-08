@@ -1,90 +1,40 @@
 package com.sunbeam.booking.service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.sunbeam.booking.dto.BookingDTO;
-import com.sunbeam.booking.entity.Booking;
-import com.sunbeam.booking.entity.Bus;
-import com.sunbeam.booking.entity.User;
-import com.sunbeam.booking.repository.BookingRepository;
-import com.sunbeam.booking.repository.BusRepository;
-import com.sunbeam.booking.repository.UserRepository;
 
-@Service
-public class BookingService {
-    @Autowired
-    private BookingRepository bookingRepository;
+public interface BookingService {
 
-    @Autowired
-    private BusRepository busRepository;
+    /**
+     * ✅ Creates a new booking.
+     * - Returns the created `BookingDTO` on success.
+     */
+    BookingDTO createBooking(BookingDTO bookingDTO);
 
-    @Autowired
-    private UserRepository userRepository;
+    /**
+     * ✅ Cancels an existing booking by ID.
+     * - Returns `true` if cancellation is successful, `false` otherwise.
+     */
+    boolean cancelBooking(Long id);
 
-    public boolean createBooking(BookingDTO bookingDTO) {
-        Optional<Bus> busOpt = busRepository.findById(bookingDTO.getBusId());
-        Optional<User> userOpt = userRepository.findById(bookingDTO.getUserId());
+    /**
+     * ✅ Retrieves all bookings for a specific user.
+     */
+    List<BookingDTO> getBookingsByUser(Long userId);
 
-        if (busOpt.isPresent() && userOpt.isPresent()) {
-            Booking booking = new Booking();
-            booking.setBus(busOpt.get());
-            booking.setUser(userOpt.get());
-            booking.setBookingDate(bookingDTO.getBookingDate());
-            booking.setSeatNumber(bookingDTO.getSeatNumber());
-            bookingRepository.save(booking);
-            return true;
-        }
-        return false;
-    }
-    
-    public Booking save(Booking booking) {
-    	return bookingRepository.save(booking);
-    }
+    /**
+     * ✅ Retrieves a booking by ID.
+     */
+    BookingDTO getBookingById(Long id);
 
-    public List<BookingDTO> getBookingsByUser(Long userId) {
-        List<Booking> bookings = bookingRepository.findByUserId(userId);
-        return bookings.stream().map(this::convertToBookingDTO).collect(Collectors.toList());
-    }
+    /**
+     * ✅ Retrieves all bookings in the system.
+     */
+    List<BookingDTO> getAllBookings();
 
-    public boolean cancelBooking(Long bookingId) {
-        Optional<Booking> bookingOpt = bookingRepository.findById(bookingId);
-        if (bookingOpt.isPresent()) {
-            bookingRepository.delete(bookingOpt.get());
-            return true;
-        }
-        return false;
-    }
-
-    public List<BookingDTO> getAllBookings() {
-        return bookingRepository.findAll().stream().map(this::convertToBookingDTO).collect(Collectors.toList());
-    }
-
-    public BookingDTO getBookingById(Long id) {
-        Booking booking = bookingRepository.findById(id).orElse(null);
-        return booking != null ? convertToBookingDTO(booking) : null;
-    }
-
-    public void deleteById(Long id) {
-        bookingRepository.deleteById(id);
-    }
-
-    public double calculateFare(String source, String destination) {
-        // Implement your fare calculation logic here
-        return 100.0; // Example fare value
-    }
-
-    private BookingDTO convertToBookingDTO(Booking booking) {
-        return new BookingDTO(
-                booking.getId(),
-                booking.getUser().getId(),
-                booking.getBus().getId(),
-                booking.getBookingDate(),
-                booking.getSeatNumber()
-        );
-    }
+    /**
+     * ✅ Updates a booking by ID.
+     * - Returns `true` if update is successful, `false` otherwise.
+     */
+    boolean updateBooking(Long bookingId, BookingDTO bookingDTO);
 }

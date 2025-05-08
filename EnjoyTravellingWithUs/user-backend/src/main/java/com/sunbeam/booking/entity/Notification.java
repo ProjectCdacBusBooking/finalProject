@@ -3,20 +3,14 @@ package com.sunbeam.booking.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
-
 @Entity
 @Table(name = "notifications")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class Notification {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@ToString(exclude = "user") // ✅ Prevents infinite recursion
+public class Notification extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -25,6 +19,6 @@ public class Notification {
     @Column(nullable = false)
     private String message;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt = new Date(); // Default to current timestamp
+    @Column(name = "is_read", nullable = false)
+    private boolean readStatus; // ✅ Tracks if the notification has been read
 }

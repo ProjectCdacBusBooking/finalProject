@@ -1,35 +1,64 @@
 package com.sunbeam.booking.entity;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-
-import java.util.List;
+import lombok.ToString;
 
 @Entity
 @Table(name = "buses")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Getter
 @Setter
-public class Bus {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = {"bookings"}) // ✅ Prevents infinite recursion
+public class Bus extends BaseEntity {
+
+    @Column(nullable = false, length = 100)
+    private String name;
+
+    @Column(nullable = false, length = 100)
+    private String source;
+
+    @Column(nullable = false, length = 100)
+    private String destination;
+
+    @Column(name = "departure_time", nullable = false)
+    private LocalDateTime departureTime;
+
+    @Column(name = "arrival_time", nullable = false)
+    private LocalDateTime arrivalTime;
+
+    @Column(nullable = false, unique = true, length = 50)
     private String busNumber;
+
+    @Column(nullable = false, length = 255)
     private String route;
-    private String departureTime;
-    private String arrivalTime;
-    private int availableSeats;
+
+    @Column(nullable = false)
     private int capacity;
 
-    @OneToMany(mappedBy = "bus", cascade = CascadeType.ALL)
+    @Column(nullable = false)
+    private int totalSeats;
+
+    @Column(nullable = false)
+    private int availableSeats;
+
+    @Column(nullable = false)
+    private double fare;
+
+    // ✅ A Bus can have multiple bookings
+    @OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Booking> bookings;
 
     

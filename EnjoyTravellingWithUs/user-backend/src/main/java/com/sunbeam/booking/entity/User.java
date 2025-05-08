@@ -2,37 +2,47 @@ package com.sunbeam.booking.entity;
 
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String username;
-    private String password;
+public class User extends BaseEntity {
+
+    @Column(name = "contact", nullable = false)
+    private long contact;
+
+    @Column(name = "email", nullable = false, unique = true, length = 255)
     private String email;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "first_name", nullable = false, length = 255)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false, length = 255)
+    private String lastName;
+
+    @Column(name = "password", nullable = false, length = 255)
+    private String password;
+
+    @Column(name = "status", nullable = false)
+    private char status;
+
+    @Column(name = "logged_in", nullable = false)
+    private boolean loggedIn;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonIgnore // ✅ Ignore bookings to prevent LazyInitializationException
     private List<Booking> bookings;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonIgnore // ✅ Ignore wallet for safety
     private Wallet wallet;
 }
